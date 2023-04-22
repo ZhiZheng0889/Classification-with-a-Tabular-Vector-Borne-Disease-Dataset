@@ -1,0 +1,82 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(keras)
+library(tidyverse)
+
+train_data <- read_csv("train.csv")
+test_data <- read_csv("test.csv")
+
+# Split features and target variable
+train_x <- train_data %>% select(-prognosis)
+train_y <- train_data$prognosis
+
+# Preprocess the data (e.g., scaling, encoding) as needed
+
+# Ensure all unique values of train_y are integers
+unique_train_y <- unique(train_y)
+print(paste("Unique values of train_y:", toString(unique_train_y)))
+
+# Convert train_y to a factor and then convert the factor levels to integers
+train_y <- as.integer(as.factor(train_y)) - 1
+
+# One-hot encode the target variable
+train_y_one_hot <- to_categorical(train_y)
+
+# Define the model architecture
+model <- keras_model_sequential() %>%
+  layer_dense(units = 64, activation = "relu", input_shape = ncol(train_x)) %>%
+  layer_dense(units = 32, activation = "relu") %>%
+  layer_dense(units = length(unique(train_y)), activation = "softmax")
+
+# Compile the model
+model %>% compile(
+  loss = "categorical_crossentropy",
+  optimizer = optimizer_adam(lr = 0.001),
+  metrics = "accuracy"
+)
+
+# Train the model
+history <- model %>% fit(
+  as.matrix(train_x), train_y_one_hot,
+  epochs = 50, batch_size = 32,
+  validation_split = 0.2
+)
+
+# Keras predictions
+test_preds_keras_probs <- model %>% predict(as.matrix(test_data))
+test_preds_keras <- k_argmax(test_preds_keras_probs) %>% as.integer()
+
+# Get top 3 predictions for each sample in the Keras model
+disease_names <- c("Chikungunya", "Dengue", "Zika", "Yellow Fever", "Raft Valley Fever", "West Nile Fever", "Malaria", "Tungiasis", "Japanese Encephalitis", "Plague", "Lyme Disease")
+
+top_3_preds_keras <- apply(test_preds_keras_probs, 1, function(x) {
+  top_3_indices <- order(x, decreasing = TRUE)[1:3]
+  top_3_diseases <- disease_names[top_3_indices]
+  paste(top_3_diseases, collapse = " ")
+})
+
+predictions_keras <- data.frame(
+  id = test_data$id,
+  prognosis = top_3_preds_keras
+)
+
+# Save the predictions to a CSV file, using 'write.table' to correctly format the output
+write.table(predictions_keras, "submission_keras.csv", sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+
+# Create a table of frequencies for Keras predictions
+keras_prediction_freq <- table(test_preds_keras)
+
+# Visualize the frequencies as a bar plot
+ggplot(data.frame(Label = names(keras_prediction_freq), Count = as.vector(keras_prediction_freq)), aes(x = Label, y = Count)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Keras Predictions")
+
+
+
+```
+

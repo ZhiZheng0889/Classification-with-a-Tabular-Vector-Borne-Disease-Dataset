@@ -12,32 +12,42 @@ library(tidyverse)
 train_data <- read_csv("train.csv")
 test_data <- read_csv("test.csv")
 
+# Save the 'id' column before scaling
+test_ids <- test_data$id
+
 # Split features and target variable
 train_x <- train_data %>% select(-prognosis)
 train_y <- train_data$prognosis
 
-# Convert train_y to a factor and then convert the factor levels to integers
+# Scale the input features and preserve column names
+train_x <- as.data.frame(scale(train_x))
+test_data <- test_data %>% select(-id)
+test_data_scaled <- as.data.frame(scale(test_data))
+colnames(test_data_scaled) <- colnames(test_data)
+
+# Convert train_y to a factor
 train_y <- as.factor(train_y)
 
-# Train the Random Forest model
-rf_model <- randomForest(x = train_x, y = train_y, ntree = 100, importance = TRUE)
+# Train the Random Forest model with hyperparameter tuning
+rf_model <- randomForest(x = train_x, y = train_y, ntree = 500, nodesize = 5, importance = TRUE)
 
 # Create a named vector that maps the factor levels to the disease names
 disease_mapping <- setNames(c("Chikungunya", "Dengue", "Zika", "Yellow Fever", "Raft Valley Fever", "West Nile Fever", "Malaria", "Tungiasis", "Japanese Encephalitis", "Plague", "Lyme Disease"), levels(train_y))
 
 # Random Forest predictions
-test_preds_rf <- predict(rf_model, test_data)
+test_preds_rf <- predict(rf_model, test_data_scaled)
 
 # Replace the factor levels in the test_preds_rf with the actual disease names
 test_preds_rf_diseases <- disease_mapping[as.character(test_preds_rf)]
 
 # Create the submission data.frame
 predictions_rf <- data.frame(
-  id = test_data$id,
+  id = test_ids,
   prognosis = test_preds_rf_diseases
 )
 
 # Save the predictions to a CSV file, using 'write.table' to correctly format the output
 write.table(predictions_rf, "submission_rf.csv", sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+
 
 ```

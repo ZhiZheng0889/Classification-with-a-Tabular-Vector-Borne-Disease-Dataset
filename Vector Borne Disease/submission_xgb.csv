@@ -1,0 +1,304 @@
+id,prognosis
+707,Dengue Dengue Japanese Encephalitis
+708,Zika West Nile Fever West Nile Fever
+709,Zika Plague Raft Valley Fever
+710,West Nile Fever Zika Zika
+711,Zika Dengue West Nile Fever
+712,Zika Japanese Encephalitis Tungiasis
+713,West Nile Fever West Nile Fever Raft Valley Fever
+714,West Nile Fever West Nile Fever Raft Valley Fever
+715,Japanese Encephalitis Dengue Japanese Encephalitis
+716,West Nile Fever Lyme Disease Raft Valley Fever
+717,West Nile Fever Tungiasis Yellow Fever
+718,Yellow Fever Yellow Fever Japanese Encephalitis
+719,Zika West Nile Fever Yellow Fever
+720,Japanese Encephalitis Yellow Fever Chikungunya
+721,Plague Lyme Disease Chikungunya
+722,Malaria Dengue Yellow Fever
+723,Raft Valley Fever Tungiasis Malaria
+724,Dengue Yellow Fever West Nile Fever
+725,Malaria Yellow Fever Dengue
+726,Chikungunya Dengue Dengue
+727,Raft Valley Fever Japanese Encephalitis Yellow Fever
+728,Dengue Tungiasis West Nile Fever
+729,Japanese Encephalitis Malaria Malaria
+730,Zika Japanese Encephalitis Yellow Fever
+731,Raft Valley Fever Malaria Malaria
+732,Japanese Encephalitis Yellow Fever Zika
+733,West Nile Fever Raft Valley Fever West Nile Fever
+734,West Nile Fever West Nile Fever Raft Valley Fever
+735,Zika Raft Valley Fever West Nile Fever
+736,Zika Tungiasis Raft Valley Fever
+737,Yellow Fever Japanese Encephalitis Plague
+738,Tungiasis West Nile Fever Malaria
+739,Plague Japanese Encephalitis Raft Valley Fever
+740,Japanese Encephalitis West Nile Fever Dengue
+741,Raft Valley Fever Japanese Encephalitis Tungiasis
+742,Dengue Zika Zika
+743,Raft Valley Fever Raft Valley Fever Lyme Disease
+744,Tungiasis Tungiasis Tungiasis
+745,West Nile Fever Japanese Encephalitis Raft Valley Fever
+746,Plague Dengue Japanese Encephalitis
+747,Japanese Encephalitis Plague West Nile Fever
+748,Japanese Encephalitis Zika Raft Valley Fever
+749,Tungiasis Zika Zika
+750,Tungiasis Yellow Fever Japanese Encephalitis
+751,Zika Yellow Fever Plague
+752,Yellow Fever Plague Tungiasis
+753,Zika Chikungunya Raft Valley Fever
+754,Zika West Nile Fever Zika
+755,Raft Valley Fever Plague Dengue
+756,West Nile Fever Japanese Encephalitis Plague
+757,Chikungunya Tungiasis Malaria
+758,Lyme Disease Dengue Yellow Fever
+759,Plague Chikungunya Malaria
+760,Chikungunya Zika Chikungunya
+761,Raft Valley Fever Plague Dengue
+762,West Nile Fever Raft Valley Fever Chikungunya
+763,Zika Malaria Tungiasis
+764,Malaria Japanese Encephalitis West Nile Fever
+765,Tungiasis Raft Valley Fever Dengue
+766,Yellow Fever Japanese Encephalitis Tungiasis
+767,Dengue Zika Dengue
+768,Raft Valley Fever Malaria Japanese Encephalitis
+769,West Nile Fever Chikungunya Chikungunya
+770,West Nile Fever Yellow Fever Plague
+771,Raft Valley Fever Plague Plague
+772,Plague Lyme Disease Yellow Fever
+773,Plague Yellow Fever Malaria
+774,Japanese Encephalitis Chikungunya Raft Valley Fever
+775,Zika Plague Zika
+776,Raft Valley Fever West Nile Fever Tungiasis
+777,Malaria Dengue Raft Valley Fever
+778,Japanese Encephalitis Chikungunya Zika
+779,Dengue Tungiasis Malaria
+780,Dengue Japanese Encephalitis Tungiasis
+781,Plague Yellow Fever Tungiasis
+782,Japanese Encephalitis Plague Zika
+783,Dengue Japanese Encephalitis West Nile Fever
+784,Tungiasis West Nile Fever Tungiasis
+785,Yellow Fever Dengue Zika
+786,Japanese Encephalitis Dengue Plague
+787,Japanese Encephalitis West Nile Fever Tungiasis
+788,Plague Yellow Fever Zika
+789,Yellow Fever Dengue Japanese Encephalitis
+790,Yellow Fever Japanese Encephalitis Dengue
+791,Tungiasis Malaria Chikungunya
+792,West Nile Fever Lyme Disease Plague
+793,Raft Valley Fever Yellow Fever Japanese Encephalitis
+794,Yellow Fever West Nile Fever Tungiasis
+795,Tungiasis Plague Japanese Encephalitis
+796,Yellow Fever Raft Valley Fever West Nile Fever
+797,Dengue Tungiasis West Nile Fever
+798,West Nile Fever Zika Raft Valley Fever
+799,Tungiasis Yellow Fever Japanese Encephalitis
+800,Dengue Japanese Encephalitis Dengue
+801,Malaria Malaria Plague
+802,Japanese Encephalitis Plague Raft Valley Fever
+803,Dengue Dengue Zika
+804,West Nile Fever Japanese Encephalitis Zika
+805,West Nile Fever West Nile Fever Malaria
+806,Japanese Encephalitis Japanese Encephalitis Yellow Fever
+807,Japanese Encephalitis Lyme Disease Lyme Disease
+808,West Nile Fever Raft Valley Fever Zika
+809,Plague Raft Valley Fever Raft Valley Fever
+810,Raft Valley Fever Dengue Plague
+811,Japanese Encephalitis Dengue Malaria
+812,Malaria Chikungunya Lyme Disease
+813,West Nile Fever West Nile Fever Dengue
+814,Zika Yellow Fever Japanese Encephalitis
+815,Plague Japanese Encephalitis Yellow Fever
+816,Zika Malaria Zika
+817,Plague Malaria Japanese Encephalitis
+818,Lyme Disease Dengue Japanese Encephalitis
+819,Raft Valley Fever Raft Valley Fever Yellow Fever
+820,Malaria Tungiasis Zika
+821,Yellow Fever Raft Valley Fever Dengue
+822,Raft Valley Fever Plague Dengue
+823,Japanese Encephalitis Chikungunya West Nile Fever
+824,West Nile Fever Dengue Zika
+825,Raft Valley Fever Japanese Encephalitis Plague
+826,Dengue Raft Valley Fever Japanese Encephalitis
+827,Dengue Japanese Encephalitis Tungiasis
+828,West Nile Fever West Nile Fever Japanese Encephalitis
+829,Chikungunya Dengue Malaria
+830,West Nile Fever Japanese Encephalitis Zika
+831,Tungiasis Dengue Japanese Encephalitis
+832,Yellow Fever Plague Lyme Disease
+833,Chikungunya West Nile Fever West Nile Fever
+834,Plague Japanese Encephalitis Lyme Disease
+835,Tungiasis Zika Plague
+836,West Nile Fever West Nile Fever Yellow Fever
+837,Dengue Dengue West Nile Fever
+838,Lyme Disease Dengue Lyme Disease
+839,Dengue Plague Japanese Encephalitis
+840,West Nile Fever Zika Malaria
+841,Plague Zika Zika
+842,Japanese Encephalitis Plague Malaria
+843,Chikungunya Malaria Japanese Encephalitis
+844,Malaria Japanese Encephalitis Plague
+845,Dengue Plague Dengue
+846,Japanese Encephalitis Dengue Zika
+847,Chikungunya Zika Zika
+848,West Nile Fever Dengue Lyme Disease
+849,Plague Raft Valley Fever Japanese Encephalitis
+850,Dengue Malaria Chikungunya
+851,Zika West Nile Fever Dengue
+852,Japanese Encephalitis Japanese Encephalitis Tungiasis
+853,Japanese Encephalitis Japanese Encephalitis Dengue
+854,Tungiasis Dengue West Nile Fever
+855,Japanese Encephalitis Raft Valley Fever Dengue
+856,Plague Japanese Encephalitis Japanese Encephalitis
+857,Raft Valley Fever Lyme Disease West Nile Fever
+858,Japanese Encephalitis Dengue Zika
+859,Japanese Encephalitis Chikungunya Japanese Encephalitis
+860,Zika Dengue West Nile Fever
+861,Dengue Yellow Fever Dengue
+862,Zika Raft Valley Fever Chikungunya
+863,Zika Plague Plague
+864,Raft Valley Fever Zika Plague
+865,Japanese Encephalitis Zika Malaria
+866,Dengue Zika Chikungunya
+867,Japanese Encephalitis Malaria Dengue
+868,Chikungunya Japanese Encephalitis Japanese Encephalitis
+869,West Nile Fever Dengue Zika
+870,Raft Valley Fever Dengue Dengue
+871,Japanese Encephalitis Plague Zika
+872,Zika Zika Raft Valley Fever
+873,Raft Valley Fever Plague Raft Valley Fever
+874,Lyme Disease Raft Valley Fever Zika
+875,Zika Dengue West Nile Fever
+876,Raft Valley Fever Zika Tungiasis
+877,Lyme Disease Japanese Encephalitis Zika
+878,West Nile Fever Japanese Encephalitis Japanese Encephalitis
+879,Zika Dengue Chikungunya
+880,Japanese Encephalitis Dengue Japanese Encephalitis
+881,Chikungunya Yellow Fever Zika
+882,Dengue Japanese Encephalitis Dengue
+883,West Nile Fever West Nile Fever West Nile Fever
+884,Japanese Encephalitis Zika Raft Valley Fever
+885,Dengue Raft Valley Fever Japanese Encephalitis
+886,Japanese Encephalitis Zika Raft Valley Fever
+887,Zika Japanese Encephalitis Japanese Encephalitis
+888,Zika Japanese Encephalitis Dengue
+889,Japanese Encephalitis Raft Valley Fever Raft Valley Fever
+890,Japanese Encephalitis Plague Dengue
+891,Lyme Disease Malaria Chikungunya
+892,Dengue Zika Dengue
+893,Plague Yellow Fever Japanese Encephalitis
+894,Japanese Encephalitis Plague Raft Valley Fever
+895,Japanese Encephalitis Tungiasis Dengue
+896,Zika Lyme Disease Dengue
+897,Raft Valley Fever West Nile Fever Japanese Encephalitis
+898,Plague Japanese Encephalitis Raft Valley Fever
+899,Japanese Encephalitis Malaria Plague
+900,Dengue West Nile Fever Zika
+901,Malaria Zika Chikungunya
+902,Zika Dengue Japanese Encephalitis
+903,West Nile Fever Raft Valley Fever Yellow Fever
+904,Malaria Japanese Encephalitis Japanese Encephalitis
+905,Japanese Encephalitis Lyme Disease Dengue
+906,Zika Lyme Disease Japanese Encephalitis
+907,West Nile Fever Plague Raft Valley Fever
+908,Yellow Fever Dengue Zika
+909,Plague Plague Raft Valley Fever
+910,Malaria Zika Lyme Disease
+911,West Nile Fever Chikungunya West Nile Fever
+912,Raft Valley Fever Tungiasis Dengue
+913,Japanese Encephalitis Plague Plague
+914,Tungiasis Plague Plague
+915,Chikungunya Malaria Lyme Disease
+916,Japanese Encephalitis Zika West Nile Fever
+917,Raft Valley Fever Zika Chikungunya
+918,Raft Valley Fever Raft Valley Fever Yellow Fever
+919,Yellow Fever Malaria Raft Valley Fever
+920,West Nile Fever Japanese Encephalitis Zika
+921,Japanese Encephalitis Japanese Encephalitis Malaria
+922,Malaria Japanese Encephalitis Plague
+923,Tungiasis Japanese Encephalitis Japanese Encephalitis
+924,Raft Valley Fever Zika Zika
+925,Plague Malaria Raft Valley Fever
+926,Plague Malaria Tungiasis
+927,Tungiasis West Nile Fever Chikungunya
+928,Japanese Encephalitis Malaria Plague
+929,Yellow Fever Plague Raft Valley Fever
+930,Plague Zika Japanese Encephalitis
+931,Zika West Nile Fever Dengue
+932,Dengue Plague Lyme Disease
+933,Japanese Encephalitis Japanese Encephalitis Yellow Fever
+934,Dengue Japanese Encephalitis Plague
+935,Japanese Encephalitis West Nile Fever Zika
+936,Malaria Malaria Japanese Encephalitis
+937,Japanese Encephalitis Yellow Fever Zika
+938,Malaria Zika Yellow Fever
+939,Japanese Encephalitis Chikungunya Tungiasis
+940,Zika Zika Chikungunya
+941,Tungiasis Raft Valley Fever Chikungunya
+942,Lyme Disease Raft Valley Fever Malaria
+943,Malaria Malaria Dengue
+944,Plague Raft Valley Fever Dengue
+945,Zika West Nile Fever Zika
+946,Plague West Nile Fever Zika
+947,Zika Zika Japanese Encephalitis
+948,Malaria Plague Plague
+949,Raft Valley Fever Chikungunya Japanese Encephalitis
+950,Raft Valley Fever Japanese Encephalitis Zika
+951,Zika Japanese Encephalitis Dengue
+952,Plague Raft Valley Fever West Nile Fever
+953,West Nile Fever Raft Valley Fever Raft Valley Fever
+954,Malaria Malaria Zika
+955,Plague Japanese Encephalitis Japanese Encephalitis
+956,Plague Plague Japanese Encephalitis
+957,Dengue West Nile Fever Tungiasis
+958,Zika Dengue Raft Valley Fever
+959,Plague Zika West Nile Fever
+960,Plague Japanese Encephalitis Raft Valley Fever
+961,Japanese Encephalitis Zika Plague
+962,Japanese Encephalitis West Nile Fever Japanese Encephalitis
+963,Tungiasis Dengue Plague
+964,Raft Valley Fever Tungiasis Dengue
+965,Yellow Fever West Nile Fever West Nile Fever
+966,Raft Valley Fever Plague Zika
+967,Zika Malaria Japanese Encephalitis
+968,West Nile Fever Raft Valley Fever Malaria
+969,Japanese Encephalitis Dengue Plague
+970,Dengue Raft Valley Fever Raft Valley Fever
+971,Plague Tungiasis Plague
+972,Plague Raft Valley Fever Tungiasis
+973,Japanese Encephalitis Tungiasis Japanese Encephalitis
+974,Tungiasis Zika Zika
+975,Yellow Fever West Nile Fever Japanese Encephalitis
+976,Dengue Zika Yellow Fever
+977,Malaria Japanese Encephalitis Japanese Encephalitis
+978,West Nile Fever Raft Valley Fever Malaria
+979,Plague Zika Malaria
+980,Yellow Fever Japanese Encephalitis Plague
+981,West Nile Fever Plague Plague
+982,Zika Plague Plague
+983,Chikungunya Malaria Plague
+984,Tungiasis Raft Valley Fever Yellow Fever
+985,Chikungunya West Nile Fever Zika
+986,Zika Japanese Encephalitis Dengue
+987,Raft Valley Fever Chikungunya Plague
+988,Plague Raft Valley Fever Raft Valley Fever
+989,Plague Dengue Zika
+990,Zika Zika West Nile Fever
+991,Raft Valley Fever Japanese Encephalitis Zika
+992,Zika Zika Japanese Encephalitis
+993,Zika Raft Valley Fever Malaria
+994,Malaria Plague Zika
+995,Zika Raft Valley Fever Malaria
+996,Zika Zika Japanese Encephalitis
+997,Dengue Zika Plague
+998,Japanese Encephalitis Japanese Encephalitis Zika
+999,Malaria Malaria Japanese Encephalitis
+1000,Plague Plague West Nile Fever
+1001,Zika Raft Valley Fever Raft Valley Fever
+1002,Zika Plague Tungiasis
+1003,Raft Valley Fever Japanese Encephalitis West Nile Fever
+1004,Zika Lyme Disease Zika
+1005,Zika Zika Tungiasis
+1006,Plague Raft Valley Fever Tungiasis
+1007,Japanese Encephalitis Raft Valley Fever Plague
+1008,Plague Tungiasis West Nile Fever
+1009,Malaria Japanese Encephalitis Japanese Encephalitis

@@ -14,11 +14,16 @@ test_data <- read_csv("test.csv")
 train_x <- train_data %>% select(-prognosis)
 train_y <- train_data$prognosis
 
-# Preprocess the data (e.g., scaling, encoding) as needed
+# Save the 'id' column before scaling
+test_ids <- test_data$id
 
-# Ensure all unique values of train_y are integers
-unique_train_y <- unique(train_y)
-print(paste("Unique values of train_y:", toString(unique_train_y)))
+# Scale the input features
+train_x <- scale(train_x)
+test_data <- scale(test_data)
+
+# Scale the input features
+train_x <- scale(train_x)
+test_data <- scale(test_data)
 
 # Convert train_y to a factor and then convert the factor levels to integers
 train_y <- as.integer(as.factor(train_y)) - 1
@@ -28,8 +33,10 @@ train_y_one_hot <- to_categorical(train_y)
 
 # Define the model architecture
 model <- keras_model_sequential() %>%
-  layer_dense(units = 64, activation = "relu", input_shape = ncol(train_x)) %>%
-  layer_dense(units = 32, activation = "relu") %>%
+  layer_dense(units = 128, activation = "relu", input_shape = ncol(train_x)) %>%
+  layer_dropout(rate = 0.5) %>%
+  layer_dense(units = 64, activation = "relu") %>%
+  layer_dropout(rate = 0.5) %>%
   layer_dense(units = length(unique(train_y)), activation = "softmax")
 
 # Compile the model
@@ -42,7 +49,7 @@ model %>% compile(
 # Train the model
 history <- model %>% fit(
   as.matrix(train_x), train_y_one_hot,
-  epochs = 50, batch_size = 32,
+  epochs = 100, batch_size = 32,
   validation_split = 0.2
 )
 
@@ -59,8 +66,9 @@ top_3_preds_keras <- apply(test_preds_keras_probs, 1, function(x) {
   paste(top_3_diseases, collapse = " ")
 })
 
+# Create the submission data.frame with test_ids
 predictions_keras <- data.frame(
-  id = test_data$id,
+  id = test_ids,
   prognosis = top_3_preds_keras
 )
 
@@ -75,7 +83,6 @@ ggplot(data.frame(Label = names(keras_prediction_freq), Count = as.vector(keras_
   geom_bar(stat = "identity") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(title = "Keras Predictions")
-
 
 
 ```

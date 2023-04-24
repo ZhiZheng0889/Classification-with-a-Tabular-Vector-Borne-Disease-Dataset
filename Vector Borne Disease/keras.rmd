@@ -5,10 +5,12 @@ output: html_notebook
 
 ```{r}
 library(keras)
-library(tidyverse)
+library(readr)
+library(dplyr)
+library(tidyr)
 
-train_data <- read_csv("train.csv")
-test_data <- read_csv("test.csv")
+train_data <- read_csv("train.csv", col_types = cols(id = col_integer(), prognosis = col_character()))
+test_data <- read_csv("test.csv", col_types = cols(id = col_integer()))
 
 # Split features and target variable
 train_x <- train_data %>% select(-prognosis)
@@ -21,12 +23,8 @@ test_ids <- test_data$id
 train_x <- scale(train_x)
 test_data <- scale(test_data)
 
-# Scale the input features
-train_x <- scale(train_x)
-test_data <- scale(test_data)
-
 # Convert train_y to a factor and then convert the factor levels to integers
-train_y <- as.integer(as.factor(train_y)) - 1
+train_y <- as.integer(factor(train_y)) - 1
 
 # One-hot encode the target variable
 train_y_one_hot <- to_categorical(train_y)
@@ -55,7 +53,7 @@ history <- model %>% fit(
 
 # Keras predictions
 test_preds_keras_probs <- model %>% predict(as.matrix(test_data))
-test_preds_keras <- k_argmax(test_preds_keras_probs) %>% as.integer()
+test_preds_keras <- k_argmax(test_preds_keras_probs)
 
 # Get top 3 predictions for each sample in the Keras model
 disease_names <- c("Chikungunya", "Dengue", "Zika", "Yellow Fever", "Raft Valley Fever", "West Nile Fever", "Malaria", "Tungiasis", "Japanese Encephalitis", "Plague", "Lyme Disease")
@@ -75,15 +73,18 @@ predictions_keras <- data.frame(
 # Save the predictions to a CSV file, using 'write.table' to correctly format the output
 write.table(predictions_keras, "submission_keras.csv", sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
 
+
+```
+
+```{r}
 # Create a table of frequencies for Keras predictions
-keras_prediction_freq <- table(test_preds_keras)
+keras_prediction_freq <- table(as.vector(test_preds_keras))
 
 # Visualize the frequencies as a bar plot
 ggplot(data.frame(Label = names(keras_prediction_freq), Count = as.vector(keras_prediction_freq)), aes(x = Label, y = Count)) +
   geom_bar(stat = "identity") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(title = "Keras Predictions")
-
 
 ```
 

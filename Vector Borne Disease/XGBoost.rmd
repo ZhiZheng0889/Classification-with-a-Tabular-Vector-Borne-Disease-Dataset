@@ -6,36 +6,55 @@ output: html_notebook
 # Load libraries
 library(xgboost)
 library(tidyverse)
+library(caret)
 
 # Read the data
 train_data <- read_csv("train.csv")
 test_data <- read_csv("test.csv")
 
+# Save the 'id' column before scaling
+test_ids <- test_data$id
+
 # Split features and target variable
-train_x <- train_data %>% select(-prognosis)
+train_x <- train_data %>% select(-prognosis, -id)
 train_y <- train_data$prognosis
 
 # Convert train_y to a factor and then convert the factor levels to integers
 train_y <- as.factor(train_y)
 train_y_int <- as.integer(train_y) - 1
 
-# Convert data.frames to matrices
-train_x_matrix <- data.matrix(train_x)
-test_x_matrix <- data.matrix(test_data)
+# Define the control parameters for the tuning process
+fit_control <- trainControl(method = "cv", number = 5, verboseIter = TRUE)
 
-# Train the XGBoost model
-xgb_params <- list("objective" = "multi:softprob", "eval_metric" = "mlogloss", "num_class" = length(unique(train_y_int)))
-xgb_data <- xgb.DMatrix(data = train_x_matrix, label = train_y_int)
-xgb_model <- xgb.train(params = xgb_params, data = xgb_data, nrounds = 100)
+# Perform hyperparameter tuning using caret
+xgb_grid <- expand.grid(nrounds = c(50, 100, 150),
+                        max_depth = c(3, 6, 9),
+                        eta = c(0.01, 0.1, 0.3),
+                        gamma = c(0, 1, 5),
+                        colsample_bytree = c(0.6, 0.8, 1),
+                        min_child_weight = c(1, 5, 10),
+                        subsample = c(0.8, 1))
 
-# XGBoost predictions
-test_preds_xgb <- predict(xgb_model, test_x_matrix, reshape = TRUE)
+set.seed(123)
+xgb_tuned <- train(x = train_x, y = train_y,
+                   method = "xgbTree",
+                   trControl = fit_control,
+                   tuneGrid = xgb_grid)
 
-# Create a named vector that maps the factor levels to the disease names
-disease_mapping <- setNames(c("Chikungunya", "Dengue", "Zika", "Yellow Fever", "Raft Valley Fever", "West Nile Fever", "Malaria", "Tungiasis", "Japanese Encephalitis", "Plague", "Lyme Disease"), levels(train_y))
+# Select the best model
+best_xgb_model <- xgb_tuned$finalModel
+
+# Convert the test data (without 'id' column) to a matrix
+test_x_matrix <- data.matrix(test_data %>% select(-id))
+
+# Make predictions with the XGBoost model
+test_preds_xgb <- predict(best_xgb_model, newdata = test_x_matrix)
+
+# Reshape the predicted probabilities into a matrix
+test_preds_xgb_matrix <- matrix(test_preds_xgb, nrow = nrow(test_data), ncol = length(unique(train_y)))
 
 # Get the top 3 predicted classes for each test case
-top_3_preds_indices <- t(apply(test_preds_xgb, 1, function(x) order(x, decreasing = TRUE)[1:3]))
+top_3_preds_indices <- t(apply(test_preds_xgb_matrix, 1, function(x) order(x, decreasing = TRUE)[1:3]))
 top_3_preds_diseases <- matrix(disease_mapping[as.character(factor(as.vector(top_3_preds_indices), labels = levels(train_y)))], nrow = nrow(top_3_preds_indices), ncol = 3, byrow = TRUE)
 
 # Concatenate the top 3 predictions separated by spaces
@@ -43,16 +62,16 @@ top_3_preds_concatenated <- apply(top_3_preds_diseases, 1, paste, collapse = " "
 
 # Create the submission data.frame
 predictions_xgb <- data.frame(
-  id = test_data$id,
-  prognosis = top_3_preds_concatenated
+  id = test_ids,
+  prognosis = top_3_preds_concatenated,
+  row.names = NULL,
+  stringsAsFactors = FALSE
 )
 
 # Save the predictions to a CSV file, using 'write.table' to correctly format the output
-write.table(predictions_xgb, "submission_xgb.csv", sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+write.table(predictions_xgb, "submission_xgb_tuned.csv", sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+
+
 
 ```
-
-
-```
-
 

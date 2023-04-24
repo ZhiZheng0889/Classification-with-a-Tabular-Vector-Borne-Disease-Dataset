@@ -1,0 +1,137 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+# Load libraries
+library(readr)
+library(dplyr)
+library(tidyr)
+library(caret)
+library(xgboost)
+library(randomForest)
+library(ggplot2)
+
+# Load the data
+train_data <- read_csv("train.csv")
+test_data <- read_csv("test.csv")
+
+# Explore the data
+summary(train_data)
+glimpse(train_data)
+
+# Check for missing values
+sapply(train_data, function(x) sum(is.na(x)))
+
+# Distribution of target variable
+table(train_data$prognosis)
+
+# Data cleaning and feature engineering
+combined_data <- bind_rows(train_data, test_data) %>% 
+  distinct() %>% 
+  select(-id)
+
+# Impute missing values with median
+medians <- sapply(combined_data[, 2:18], function(x) median(x, na.rm = TRUE))
+combined_data[, 2:18] <- mapply(function(x, y) ifelse(is.na(x), y, x), combined_data[, 2:18], medians)
+
+# Create new features
+combined_data <- combined_data %>%
+  mutate(total_symptoms = rowSums(select(., -prognosis)),
+         fever_ratio = sudden_fever / total_symptoms,
+         joint_pain_ratio = joint_pain / total_symptoms,
+         headache_ratio = headache / total_symptoms)
+
+# Split data back into train and test sets
+train_data <- combined_data %>% dplyr::slice(1:nrow(train_data))
+test_data <- combined_data %>% dplyr::slice((nrow(train_data) + 1):nrow(combined_data))
+
+# Ensemble Baseline
+# Split features and target variable
+train_x <- train_data %>% select(-prognosis)
+train_y <- train_data$prognosis
+
+# Convert the target variable to a factor
+train_y <- as.factor(train_y)
+
+# Fit a Random Forest model
+set.seed(123)
+rf_model <- randomForest(train_x, train_y, importance = TRUE, ntree = 500, mtry = 4)
+
+
+# Fit an XGBoost model
+set.seed(123)
+train_y_numeric <- as.numeric(as.factor(train_data$prognosis)) - 1
+xgb_model <- xgboost(data = as.matrix(train_x), label = as.matrix(train_y_numeric), nrounds = 100, objective = "multi:softprob", num_class = length(unique(train_y_numeric)))
+
+# Impute missing values in the test data (excluding the target variable) with the medians
+medians <- sapply(train_data %>% select(-prognosis), median, na.rm = TRUE)
+test_data_imputed <- test_data %>% select(-prognosis)
+for (i in 1:ncol(test_data_imputed)) {
+  test_data_imputed[is.na(test_data_imputed[, i]), i] <- medians[i]
+}
+test_data_imputed$prognosis <- test_data$prognosis
+
+# Make predictions using the randomForest model
+rf_preds <- predict(rf_model, test_data_imputed %>% select(-prognosis), type = "prob")
+
+# Make predictions using the XGBoost model
+test_data_matrix <- as.matrix(test_data_imputed %>% select(-prognosis))
+xgb_preds <- predict(xgb_model, test_data_matrix)
+
+# Ensemble the two models by averaging their predictions
+ensemble_preds <- (rf_preds + xgb_preds)/2
+
+# Get the top 3 predictions for each sample in the ensemble model
+disease_names <- c("Chikungunya", "Dengue", "Zika", "Yellow Fever", "Raft Valley Fever", "West Nile Fever", "Malaria", "Tungiasis", "Japanese Encephalitis", "Plague", "Lyme Disease")
+
+top_3_preds_ensemble <- apply(ensemble_preds, 1, function(x) {
+top_3_indices <- order(x, decreasing = TRUE)[1:3]
+top_3_diseases <- disease_names[top_3_indices]
+paste(top_3_diseases, collapse = " ")
+})
+
+# Create a sequence of integers as ids for the test data
+test_ids <- seq_len(nrow(test_data))
+
+# Create the submission data.frame with test_ids
+predictions_ensemble <- data.frame(
+id = test_ids,
+prognosis = top_3_preds_ensemble
+)
+
+# Save the predictions to a CSV file, using 'write.table' to correctly format the output
+write.table(predictions_ensemble, "submission_ensemble.csv", sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+```
+
+
+```{r}
+# Visualize the distribution of the target variable
+ggplot(train_data, aes(x = prognosis)) +
+  geom_bar() +
+  theme_minimal() +
+  labs(title = "Distribution of Prognosis", x = "Disease", y = "Count")
+
+# Visualize the relationships between symptoms and prognosis
+ggplot(train_data, aes(x = total_symptoms, y = ..count.., fill = prognosis)) +
+  geom_histogram(bins = 10, position = "dodge") +
+  theme_minimal() +
+  labs(title = "Distribution of Total Symptoms by Prognosis", x = "Total Symptoms", y = "Count")
+
+# Visualize the correlation between selected features
+symptom_correlation <- cor(train_data[, c(2:18, 20:22)], use = "complete.obs")
+corrplot::corrplot(symptom_correlation, type = "upper", method = "color", tl.col = "black", tl.srt = 45)
+
+```
+
+```{r}
+# Identify columns with missing values in test_data_imputed
+cols_with_na <- colnames(test_data_imputed)[colSums(is.na(test_data_imputed)) > 0]
+
+# Print columns with missing values
+print(cols_with_na)
+
+
+```
+

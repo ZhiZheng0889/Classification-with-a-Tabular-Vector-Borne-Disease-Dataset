@@ -1,0 +1,151 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(keras)
+library(tidyverse)
+library(data.table)
+library(caret)
+library(reticulate)
+
+# Read the data
+train_data <- read_csv("train.csv")
+train_data$data_type <- 0
+train_data$prognosis <- gsub(" ", "_", train_data$prognosis)
+
+test_data <- read_csv("test.csv")
+test_data$data_type <- 0
+
+# Remove non-ASCII characters from column names
+colnames(train_data) <- gsub("[^ -~]+", "", colnames(train_data))
+colnames(test_data) <- gsub("[^ -~]+", "", colnames(test_data))
+
+features <- setdiff(names(test_data), c("id", "data_type")) %>% sort()
+
+# Encode prognosis as a one-hot target
+enc <- caret::dummyVars(~ prognosis, data = train_data)
+y_enc <- predict(enc, train_data)
+y <- to_categorical(y_enc)
+
+prognosis_classes <- colnames(y_enc)
+N_CLASSES <- ncol(y_enc)  # Update this line to fix the issue
+
+# Model building function
+build_model <- function(input_shape) {
+  model <- keras_model_sequential() %>%
+    layer_dropout(rate = 0.2, input_shape = input_shape) %>%
+    layer_dense(units = 64, activation = "relu") %>%
+    layer_batch_normalization() %>%
+    layer_dense(units = 32, activation = "relu") %>%
+    layer_dropout(rate = 0.3) %>%
+    layer_dense(units = N_CLASSES, activation = "softmax")
+  
+  return(model)
+}
+
+# Training parameters
+N_FOLDS <- 10
+N_REPEATS <- 10
+
+X <- train_data %>%
+  select(features) %>%
+  as.matrix()
+X_data_type <- train_data$data_type
+X_test <- test_data %>%
+  select(features) %>%
+  as.matrix()
+
+oof_preds <- matrix(0, nrow = nrow(train_data), ncol = N_CLASSES)
+test_preds <- matrix(0, nrow = nrow(test_data), ncol = N_CLASSES)
+oof_metrics <- c()
+oof_lls <- c()
+
+# Train and evaluate the model using K-fold cross-validation
+y_df <- as.data.frame(y)
+# ...
+for (i in 1:N_REPEATS) {
+  k_fold_list <- createFolds(seq_along(X[, 1]), k = N_FOLDS, list = TRUE)
+  
+  for (j in 1:N_FOLDS) {
+    train_index <- unlist(k_fold_list[-j])
+    test_index <- k_fold_list[[j]]
+    
+    cat("Train index min:", min(train_index), "max:", max(train_index), "\n")
+    cat("Test index min:", min(test_index), "max:", max(test_index), "\n")
+    
+    X_train <- X[train_index, , drop = FALSE]
+    X_valid <- X[test_index, , drop = FALSE]
+    y_train <- as.matrix(y_df[train_index, ])
+    y_valid <- as.matrix(y_df[test_index, ])
+    
+    model <- build_model(input_shape = dim(X_train)[2])
+    model %>% compile(
+      optimizer = optimizer_adam(lr = 0.001),
+      loss = "categorical_crossentropy",
+      metrics = list("accuracy")
+    )
+    
+    history <- model %>% fit(
+      np_array(X_train), np_array(y_train),
+      validation_data = list(np_array(X_valid), np_array(y_valid)),
+      batch_size = 32,
+      epochs = 100
+    )
+
+    oof_pred <- model %>% predict_proba(X_valid)
+    test_pred <- model %>% predict_proba(X_test)
+    
+    # Evaluate out-of-fold performance
+    oof_metric <- mean(apply(y_valid * oof_pred, 1, sum))
+    oof_ll <- sum(y_valid * log(oof_pred)) / length(test_index)
+    
+    cat(sprintf("Fold metric: MAP@3: %.5f, Log-loss: %.5f\n", oof_metric, oof_ll))
+    
+    oof_metrics <- c(oof_metrics, oof_metric)
+    oof_lls <- c(oof_lls, oof_ll)
+    
+    oof_preds[test_index, ] <- oof_preds[test_index, ] + oof_pred / N_REPEATS
+    test_preds <- test_preds + test_pred / (N_REPEATS * N_FOLDS)
+  }
+}
+
+
+# Calculate overall metrics
+oof_metric <- round(mean(oof_metrics), 5)
+oof_ll <- round(mean(oof_lls), 5)
+
+# Function to generate top 3 predictions
+generate_predictions <- function(preds, enc) {
+  top_3_indices <- t(apply(preds, 1, function(x) order(x, decreasing = TRUE)[1:3]))
+  top_3_preds <- matrix(enc$colnames[top_3_indices], nrow = nrow(top_3_indices), ncol = 3, byrow = TRUE)
+  return(top_3_preds)
+}
+
+# Get top 3 predictions
+top_3_predictions <- generate_predictions(test_preds, enc)
+submission_filename <- sprintf("submission_%.5f.csv", oof_metric)
+pred_prognosis <- apply(top_3_predictions, 1, paste, collapse = " ")
+
+# Create and save submission file
+predictions <- data.frame(
+  id = test_data$id,
+  prognosis = pred_prognosis,
+  stringsAsFactors = FALSE
+)
+write.table(predictions, submission_filename, sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+
+
+```
+```{r}
+
+
+
+
+```
+```{r}
+
+```
+
+

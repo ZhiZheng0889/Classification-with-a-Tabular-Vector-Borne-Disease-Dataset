@@ -1,0 +1,137 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+# Load libraries
+library(readr)
+library(dplyr)
+library(tidyr)
+library(caret)
+library(xgboost)
+library(randomForest)
+library(ggplot2)
+library(lightgbm)
+
+# Load the data
+train_data <- read_csv("train.csv")
+test_data <- read_csv("test.csv")
+
+# Data cleaning and feature engineering
+combined_data <- bind_rows(train_data, test_data) %>% 
+  distinct() %>% 
+  select(-id)
+
+# Impute missing values with median
+medians <- sapply(combined_data[, 2:18], function(x) median(x, na.rm = TRUE))
+combined_data[, 2:18] <- mapply(function(x, y) ifelse(is.na(x), y, x), combined_data[, 2:18], medians)
+
+# Split data back into train and test sets
+train_data <- combined_data %>% dplyr::slice(1:nrow(train_data))
+test_data <- combined_data %>% dplyr::slice((nrow(train_data) + 1):nrow(combined_data))
+
+# Prepare the data for model training
+train_x <- train_data %>% select(-prognosis)
+train_y <- train_data$prognosis
+
+# Convert the target variable to a factor
+train_y <- as.factor(train_y)
+train_y_numeric <- as.integer(train_y) - 1
+
+# Model training and cross-validation
+control <- trainControl(method = "cv", number = 5, classProbs = TRUE, summaryFunction = multiClassSummary)
+
+# Random Forest
+set.seed(123)
+rf_cv <- train(
+  x = train_x,
+  y = train_y,
+  method = "rf",
+  metric = "logLoss",
+  trControl = control,
+  tuneGrid = data.frame(.mtry = 4)
+)
+
+# XGBoost
+set.seed(123)
+xgb_cv <- train(
+  x = train_x,
+  y = train_y,
+  method = "xgbTree",
+  metric = "logLoss",
+  trControl = control,
+  tuneGrid = data.frame(
+    .nrounds = 100,
+    .max_depth = 6,
+    .eta = 0.3,
+    .gamma = 0,
+    .colsample_bytree = 1,
+    .min_child_weight = 1,
+    .subsample = 1
+  )
+)
+
+# LightGBM
+train_lgb <- lgb.Dataset(as.matrix(train_x), label = train_y_numeric)
+
+params <- list(
+  objective = "multiclass",
+  metric = "multi_logloss",
+  num_class = length(unique(train_y_numeric)),
+  max_depth = -1,
+  min_data_in_leaf = 20,
+  learning_rate = 0.1,
+  bagging_fraction = 1,
+  feature_fraction = 1,
+  num_leaves = 31
+)
+
+nrounds <- 100
+nfolds <- 5
+
+set.seed(123)
+lgb_cv <- lgb.cv(
+  params = params,
+  data = train_lgb,
+  nrounds = nrounds,
+  nfold = nfolds,
+  stratified = TRUE,
+  min_data = 1,
+  verbose = -1
+)
+
+lgb_logLoss <- mean(lgb_cv$record_evals$valid$multi_logloss$eval)
+
+# Model selection
+models <- list("Random Forest" = rf_cv, "XGBoost" = xgb_cv)
+model_names <- c(names(models), "LightGBM")
+model_scores <- c(rf_cv$results$logLoss, xgb_cv$results$logLoss, lgb_logLoss)
+
+model_results <- data.frame(
+  Model = model_names,
+  LogLoss = model_scores
+)
+
+# Print the model results
+model_results
+
+
+```
+
+```{r}
+cv_results <- data.frame(
+  Model = c("Random Forest", "XGBoost", "LightGBM"),
+  logLoss = c(rf_cv$results$logLoss, xgb_cv$results$logLoss, lgb_cv$results$logLoss)
+)
+
+print(cv_results)
+
+```
+
+```{r}
+best_model <- lgb_cv$finalModel
+
+```
+

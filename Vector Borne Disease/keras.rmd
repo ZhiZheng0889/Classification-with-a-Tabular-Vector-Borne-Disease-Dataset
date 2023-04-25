@@ -4,11 +4,13 @@ output: html_notebook
 ---
 
 ```{r}
+# Load libraries
 library(keras)
 library(readr)
 library(dplyr)
 library(tidyr)
 
+# Read the data
 train_data <- read_csv("train.csv", col_types = cols(id = col_integer(), prognosis = col_character()))
 test_data <- read_csv("test.csv", col_types = cols(id = col_integer()))
 
@@ -85,6 +87,360 @@ ggplot(data.frame(Label = names(keras_prediction_freq), Count = as.vector(keras_
   geom_bar(stat = "identity") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(title = "Keras Predictions")
+
+```
+```{r}
+# Load libraries
+library(keras)
+library(readr)
+library(dplyr)
+library(tidyr)
+library(caret)
+
+# Define a function to build and compile a Keras model with hyperparameters as input arguments
+build_model <- function(units1, units2, dropout_rate) {
+  model <- keras_model_sequential() %>%
+    layer_dense(units = units1, activation = "relu", input_shape = ncol(train_x)) %>%
+    layer_dropout(rate = dropout_rate) %>%
+    layer_dense(units = units2, activation = "relu") %>%
+    layer_dropout(rate = dropout_rate) %>%
+    layer_dense(units = length(unique(train_y)), activation = "softmax")
+  
+  model %>% compile(
+    loss = "categorical_crossentropy",
+    optimizer = optimizer_adam(lr = 0.001),
+    metrics = "accuracy"
+  )
+  
+  return(model)
+}
+
+# Set up a grid of hyperparameter values to search over
+units1_grid <- c(64, 128, 256)
+units2_grid <- c(32, 64, 128)
+dropout_rate_grid <- c(0.3, 0.5, 0.7)
+
+# Initialize variables to store the best hyperparameter combination and the best accuracy
+best_hyperparams <- list(units1 = NULL, units2 = NULL, dropout_rate = NULL)
+best_accuracy <- 0
+
+# Iterate over the hyperparameter grid
+for (units1 in units1_grid) {
+  for (units2 in units2_grid) {
+    for (dropout_rate in dropout_rate_grid) {
+      
+      # Build and train the model with the current hyperparameter combination
+      model <- build_model(units1, units2, dropout_rate)
+      history <- model %>% fit(as.matrix(train_x), train_y_one_hot, epochs = 100, batch_size = 32, validation_split = 0.2, verbose = 0)
+      
+      # Evaluate the model's accuracy on the validation set
+      current_accuracy <- max(history$metrics$val_accuracy)
+      
+      # Check if the current accuracy is better than the best accuracy found so far
+      if (current_accuracy > best_accuracy) {
+        best_hyperparams <- list(units1 = units1, units2 = units2, dropout_rate = dropout_rate)
+        best_accuracy <- current_accuracy
+      }
+      
+      cat("units1:", units1, "units2:", units2, "dropout_rate:", dropout_rate, "accuracy:", current_accuracy, "\n")
+    }
+  }
+}
+
+# Print the best hyperparameter combination and the corresponding accuracy
+cat("Best hyperparameters:\n")
+print(best_hyperparams)
+cat("Best accuracy:", best_accuracy, "\n")
+
+```
+```{r}
+library(keras)
+library(readr)
+library(dplyr)
+library(tidyr)
+
+train_data <- read_csv("train.csv", col_types = cols(id = col_integer(), prognosis = col_character()))
+test_data <- read_csv("test.csv", col_types = cols(id = col_integer()))
+
+# Split features and target variable
+train_x <- train_data %>% select(-prognosis)
+train_y <- train_data$prognosis
+
+# Save the 'id' column before scaling
+test_ids <- test_data$id
+
+# Scale the input features
+train_x <- scale(train_x)
+test_data <- scale(test_data)
+
+# Convert train_y to a factor and then convert the factor levels to integers
+train_y <- as.integer(factor(train_y)) - 1
+
+# One-hot encode the target variable
+train_y_one_hot <- to_categorical(train_y)
+
+# Define the model architecture with the best hyperparameters
+model <- keras_model_sequential() %>%
+  layer_dense(units = 256, activation = "relu", input_shape = ncol(train_x)) %>%
+  layer_dropout(rate = 0.5) %>%
+  layer_dense(units = 64, activation = "relu") %>%
+  layer_dropout(rate = 0.5) %>%
+  layer_dense(units = length(unique(train_y)), activation = "softmax")
+
+# Compile the model
+model %>% compile(
+  loss = "categorical_crossentropy",
+  optimizer = optimizer_adam(lr = 0.001),
+  metrics = "accuracy"
+)
+
+# Train the model
+history <- model %>% fit(
+  as.matrix(train_x), train_y_one_hot,
+  epochs = 100, batch_size = 32,
+  validation_split = 0.2
+)
+
+# Keras predictions
+test_preds_keras_probs <- model %>% predict(as.matrix(test_data))
+test_preds_keras <- k_argmax(test_preds_keras_probs)
+
+# Get top 3 predictions for each sample in the Keras model
+disease_names <- c("Chikungunya", "Dengue", "Zika", "Yellow Fever", "Raft Valley Fever", "West Nile Fever", "Malaria", "Tungiasis", "Japanese Encephalitis", "Plague", "Lyme Disease")
+
+top_3_preds_keras <- apply(test_preds_keras_probs, 1, function(x) {
+  top_3_indices <- order(x, decreasing = TRUE)[1:3]
+  top_3_diseases <- disease_names[top_3_indices]
+  paste(top_3_diseases, collapse = " ")
+})
+
+# Create the submission data.frame with test_ids
+predictions_keras <- data.frame(
+  id = test_ids,
+  prognosis = top_3_preds_keras
+)
+
+# Save the predictions to a CSV file, using 'write.table' to correctly format the output
+write.table(predictions_keras, "submission_keras_hyper.csv", sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+
+```
+
+
+```{r}
+library(keras)
+library(readr)
+library(dplyr)
+library(tidyr)
+
+train_data <- read_csv("train.csv", col_types = cols(id = col_integer(), prognosis = col_character()))
+test_data <- read_csv("test.csv", col_types = cols(id = col_integer()))
+
+# Split features and target variable
+train_x <- train_data %>% select(-prognosis)
+train_y <- train_data$prognosis
+
+# Save the 'id' column before scaling
+test_ids <- test_data$id
+
+# Scale the input features
+train_x <- scale(train_x)
+test_data <- scale(test_data)
+
+# Feature Engineering
+
+# Interaction terms example for train data
+train_x <- as.data.frame(train_x)
+feature1 <- 1  # Replace with the actual column index of the feature you want to create interaction terms for
+feature2 <- 2  # Replace with the actual column index of the feature you want to create interaction terms for
+
+train_x_interactions <- sweep(train_x, 2, train_x[, feature1], `*`)
+colnames(train_x_interactions) <- paste0(colnames(train_x), "_interaction_feature1")
+
+train_x_interactions2 <- sweep(train_x, 2, train_x[, feature2], `*`)
+colnames(train_x_interactions2) <- paste0(colnames(train_x), "_interaction_feature2")
+
+train_x <- cbind(train_x, train_x_interactions, train_x_interactions2)
+
+# Interaction terms example for test data
+test_data <- as.data.frame(test_data)
+test_data_interactions <- sweep(test_data, 2, test_data[, feature1], `*`)
+colnames(test_data_interactions) <- paste0(colnames(test_data), "_interaction_feature1")
+
+test_data_interactions2 <- sweep(test_data, 2, test_data[, feature2], `*`)
+colnames(test_data_interactions2) <- paste0(colnames(test_data), "_interaction_feature2")
+
+test_data <- cbind(test_data, test_data_interactions, test_data_interactions2)
+
+# Log transformation example
+train_x_log <- train_x %>% mutate(across(everything(), ~ log1p(.), .names = "log_{.col}"))
+test_data_log <- test_data %>% mutate(across(everything(), ~ log1p(.), .names = "log_{.col}"))
+
+# Combine the original dataset with the log-transformed features
+train_x <- bind_cols(train_x, train_x_log)
+test_data <- bind_cols(test_data, test_data_log)
+
+# Standardize the features
+train_x <- scale(train_x)
+test_data <- scale(test_data)
+
+# Convert train_y to a factor and then convert the factor levels to integers
+train_y <- as.integer(factor(train_y)) - 1
+
+# One-hot encode the target variable
+train_y_one_hot <- to_categorical(train_y)
+
+# Define the model architecture
+model <- keras_model_sequential() %>%
+  layer_dense(units = 256, activation = "relu", input_shape = ncol(train_x)) %>%
+  layer_dropout(rate = 0.5) %>%
+  layer_dense(units = 64, activation = "relu") %>%
+  layer_dropout(rate = 0.5) %>%
+  layer_dense(units = length(unique(train_y)), activation = "softmax")
+
+# Compile the model
+model %>% compile(
+  loss = "categorical_crossentropy",
+  optimizer = optimizer_adam(lr = 0.001),
+  metrics = "accuracy"
+)
+
+# Train the model
+history <- model %>% fit(
+  as.matrix(train_x), train_y_one_hot,
+  epochs = 100, batch_size = 32,
+  validation_split = 0.2
+)
+
+# Keras predictions
+test_preds_keras_probs <- model %>% predict(as.matrix(test_data))
+test_preds_keras <- k_argmax(test_preds_keras_probs)
+
+# Get top 3 predictions for each sample in the Keras model
+disease_names <- c("Chikungunya", "Dengue", "Zika", "Yellow Fever", "Raft Valley Fever", "West Nile Fever", "Malaria", "Tungiasis", "Japanese Encephalitis", "Plague", "Lyme Disease")
+
+top_3_preds_keras <- apply(test_preds_keras_probs, 1, function(x) {
+  top_3_indices <- order(x, decreasing = TRUE)[1:3]
+  top_3_diseases <- disease_names[top_3_indices]
+  paste(top_3_diseases, collapse = " ")
+})
+
+# Create the submission data.frame with test_ids
+predictions_keras <- data.frame(
+  id = test_ids,
+  prognosis = top_3_preds_keras
+)
+
+# Save the predictions to a CSV file, using 'write.table' to correctly format the output
+write.table(predictions_keras, "submission_keras.csv", sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+
+
+```
+
+
+```{r}
+library(keras)
+library(readr)
+library(dplyr)
+library(tidyr)
+
+train_data <- read_csv("train.csv", col_types = cols(id = col_integer(), prognosis = col_character()))
+test_data <- read_csv("test.csv", col_types = cols(id = col_integer()))
+
+# Split features and target variable
+train_x <- train_data %>% select(-prognosis)
+train_y <- train_data$prognosis
+
+# Save the 'id' column before scaling
+test_ids <- test_data$id
+
+# Scale the input features
+train_x <- scale(train_x)
+test_data <- scale(test_data)
+
+# Feature Engineering
+
+# Interaction terms example for test data
+feature1 <- 1  # Replace with the actual column index of the feature you want to create interaction terms for
+feature2 <- 2  # Replace with the actual column index of the feature you want to create interaction terms for
+
+test_data_interactions <- sweep(test_data, 2, test_data[, feature1], `*`)
+colnames(test_data_interactions) <- paste0(colnames(test_data), "_interaction_feature1")
+
+test_data_interactions2 <- sweep(test_data, 2, test_data[, feature2], `*`)
+colnames(test_data_interactions2) <- paste0(colnames(test_data), "_interaction_feature2")
+
+test_data <- cbind(test_data, test_data_interactions, test_data_interactions2)
+
+# Combine the original dataset with the interaction terms
+train_x <- bind_cols(train_x, train_x_interactions)
+test_data <- bind_cols(test_data, test_data_interactions)
+
+# Log transformation example
+train_x_log <- train_x %>% mutate(across(everything(), ~ log1p(.), .names = "log_{.col}"))
+test_data_log <- test_data %>% mutate(across(everything(), ~ log1p(.), .names = "log_{.col}"))
+
+# Combine the original dataset with the log-transformed features
+train_x <- bind_cols(train_x, train_x_log)
+test_data <- bind_cols(test_data, test_data_log)
+
+# Standardize the features
+train_x <- scale(train_x)
+test_data <- scale(test_data)
+
+# Convert train_y to a factor and then convert the factor levels to integers
+train_y <- as.integer(factor(train_y)) - 1
+
+# One-hot encode the target variable
+train_y_one_hot <- to_categorical(train_y)
+
+# Define the model architecture
+model <- keras_model_sequential() %>%
+  layer_dense(units = 256, activation = "relu", input_shape = ncol(train_x),
+              kernel_regularizer = regularizer_l1_l2(l1 = 0.001, l2 = 0.001)) %>%
+  layer_dropout(rate = 0.5) %>%
+  layer_dense(units = 64, activation = "relu",
+              kernel_regularizer = regularizer_l2(0.001)) %>%
+  layer_dropout(rate = 0.5) %>%
+  layer_dense(units = length(unique(train_y)), activation = "softmax")
+
+# Compile the model
+model %>% compile(
+  loss = "categorical_crossentropy",
+  optimizer = optimizer_adam(lr = 0.001),
+  metrics = "accuracy"
+)
+
+# Train the model
+history <- model %>% fit(
+  as.matrix(train_x), train_y_one_hot,
+  epochs = 100, batch_size = 32,
+  validation_split = 0.2
+)
+
+# Keras predictions
+test_preds_keras_probs <- model %>% predict(as.matrix(test_data))
+
+
+test_preds_keras <- k_argmax(test_preds_keras_probs)
+
+# Get top 3 predictions for each sample in the Keras model
+disease_names <- c("Chikungunya", "Dengue", "Zika", "Yellow Fever", "Raft Valley Fever", "West Nile Fever", "Malaria", "Tungiasis", "Japanese Encephalitis", "Plague", "Lyme Disease")
+
+top_3_preds_keras <- apply(test_preds_keras_probs, 1, function(x) {
+  top_3_indices <- order(x, decreasing = TRUE)[1:3]
+  top_3_diseases <- disease_names[top_3_indices]
+  paste(top_3_diseases, collapse = " ")
+})
+
+# Create the submission data.frame with test_ids
+predictions_keras <- data.frame(
+  id = test_ids,
+  prognosis = top_3_preds_keras
+)
+
+# Save the predictions to a CSV file, using 'write.table' to correctly format the output
+write.table(predictions_keras, "submission_keras.csv", sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+
 
 ```
 

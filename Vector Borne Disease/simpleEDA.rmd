@@ -92,13 +92,13 @@ top_3_diseases <- disease_names[top_3_indices]
 paste(top_3_diseases, collapse = " ")
 })
 
-# Create a sequence of integers as ids for the test data
-test_ids <- seq_len(nrow(test_data))
+# Create a sequence of integers as ids for the test data, starting from 707
+test_ids <- seq_len(nrow(test_data)) + 706
 
 # Create the submission data.frame with test_ids
 predictions_ensemble <- data.frame(
-id = test_ids,
-prognosis = top_3_preds_ensemble
+  id = test_ids,
+  prognosis = top_3_preds_ensemble
 )
 
 # Save the predictions to a CSV file, using 'write.table' to correctly format the output
@@ -122,16 +122,6 @@ ggplot(train_data, aes(x = total_symptoms, y = ..count.., fill = prognosis)) +
 # Visualize the correlation between selected features
 symptom_correlation <- cor(train_data[, c(2:18, 20:22)], use = "complete.obs")
 corrplot::corrplot(symptom_correlation, type = "upper", method = "color", tl.col = "black", tl.srt = 45)
-
-```
-
-```{r}
-# Identify columns with missing values in test_data_imputed
-cols_with_na <- colnames(test_data_imputed)[colSums(is.na(test_data_imputed)) > 0]
-
-# Print columns with missing values
-print(cols_with_na)
-
 
 ```
 

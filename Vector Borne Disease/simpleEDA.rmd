@@ -4,124 +4,133 @@ output: html_notebook
 ---
 
 ```{r}
-# Load libraries
+library(httr)
 library(readr)
-library(dplyr)
-library(tidyr)
-library(caret)
-library(xgboost)
-library(randomForest)
-library(ggplot2)
+library(reticulate)
+library(keras)
 
-# Load the data
-train_data <- read_csv("train.csv")
-test_data <- read_csv("test.csv")
-
-# Explore the data
-summary(train_data)
-glimpse(train_data)
-
-# Check for missing values
-sapply(train_data, function(x) sum(is.na(x)))
-
-# Distribution of target variable
-table(train_data$prognosis)
-
-# Data cleaning and feature engineering
-combined_data <- bind_rows(train_data, test_data) %>% 
-  distinct() %>% 
-  select(-id)
-
-# Impute missing values with median
-medians <- sapply(combined_data[, 2:18], function(x) median(x, na.rm = TRUE))
-combined_data[, 2:18] <- mapply(function(x, y) ifelse(is.na(x), y, x), combined_data[, 2:18], medians)
-
-# Create new features
-combined_data <- combined_data %>%
-  mutate(total_symptoms = rowSums(select(., -prognosis)),
-         fever_ratio = sudden_fever / total_symptoms,
-         joint_pain_ratio = joint_pain / total_symptoms,
-         headache_ratio = headache / total_symptoms)
-
-# Split data back into train and test sets
-train_data <- combined_data %>% dplyr::slice(1:nrow(train_data))
-test_data <- combined_data %>% dplyr::slice((nrow(train_data) + 1):nrow(combined_data))
-
-# Ensemble Baseline
-# Split features and target variable
-train_x <- train_data %>% select(-prognosis)
-train_y <- train_data$prognosis
-
-# Convert the target variable to a factor
-train_y <- as.factor(train_y)
-
-# Fit a Random Forest model
-set.seed(123)
-rf_model <- randomForest(train_x, train_y, importance = TRUE, ntree = 500, mtry = 4)
-
-
-# Fit an XGBoost model
-set.seed(123)
-train_y_numeric <- as.numeric(as.factor(train_data$prognosis)) - 1
-xgb_model <- xgboost(data = as.matrix(train_x), label = as.matrix(train_y_numeric), nrounds = 100, objective = "multi:softprob", num_class = length(unique(train_y_numeric)))
-
-# Impute missing values in the test data (excluding the target variable) with the medians
-medians <- sapply(train_data %>% select(-prognosis), median, na.rm = TRUE)
-test_data_imputed <- test_data %>% select(-prognosis)
-for (i in 1:ncol(test_data_imputed)) {
-  test_data_imputed[is.na(test_data_imputed[, i]), i] <- medians[i]
-}
-test_data_imputed$prognosis <- test_data$prognosis
-
-# Make predictions using the randomForest model
-rf_preds <- predict(rf_model, test_data_imputed %>% select(-prognosis), type = "prob")
-
-# Make predictions using the XGBoost model
-test_data_matrix <- as.matrix(test_data_imputed %>% select(-prognosis))
-xgb_preds <- predict(xgb_model, test_data_matrix)
-
-# Ensemble the two models by averaging their predictions
-ensemble_preds <- (rf_preds + xgb_preds)/2
-
-# Get the top 3 predictions for each sample in the ensemble model
-disease_names <- c("Chikungunya", "Dengue", "Zika", "Yellow Fever", "Raft Valley Fever", "West Nile Fever", "Malaria", "Tungiasis", "Japanese Encephalitis", "Plague", "Lyme Disease")
-
-top_3_preds_ensemble <- apply(ensemble_preds, 1, function(x) {
-top_3_indices <- order(x, decreasing = TRUE)[1:3]
-top_3_diseases <- disease_names[top_3_indices]
-paste(top_3_diseases, collapse = " ")
-})
-
-# Create a sequence of integers as ids for the test data, starting from 707
-test_ids <- seq_len(nrow(test_data)) + 706
-
-# Create the submission data.frame with test_ids
-predictions_ensemble <- data.frame(
-  id = test_ids,
-  prognosis = top_3_preds_ensemble
-)
-
-# Save the predictions to a CSV file, using 'write.table' to correctly format the output
-write.table(predictions_ensemble, "submission_ensemble.csv", sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
 ```
 
 
 ```{r}
-# Visualize the distribution of the target variable
-ggplot(train_data, aes(x = prognosis)) +
-  geom_bar() +
-  theme_minimal() +
-  labs(title = "Distribution of Prognosis", x = "Disease", y = "Count")
+test_data_url <- "https://www.dropbox.com/s/0a2tse6lyxpg1h5/test.csv?dl=1"
+train_data_url <- "https://www.dropbox.com/s/z1jjzqwnmx6opxi/train.csv?dl=1"
 
-# Visualize the relationships between symptoms and prognosis
-ggplot(train_data, aes(x = total_symptoms, y = ..count.., fill = prognosis)) +
-  geom_histogram(bins = 10, position = "dodge") +
-  theme_minimal() +
-  labs(title = "Distribution of Total Symptoms by Prognosis", x = "Total Symptoms", y = "Count")
+test_df <- read_csv(url(test_data_url))
+train_df <- read_csv(url(train_data_url))
 
-# Visualize the correlation between selected features
-symptom_correlation <- cor(train_data[, c(2:18, 20:22)], use = "complete.obs")
-corrplot::corrplot(symptom_correlation, type = "upper", method = "color", tl.col = "black", tl.srt = 45)
 
 ```
+
+```{r}
+# Dummy preprocess function (replace with your actual preprocessing)
+preprocess <- function(df) {
+  x <- df[, -1] # Remove the target column (replace with actual column name)
+  y <- df[, 1]  # Extract the target column (replace with actual column name)
+  
+  return(list(x = x, y = y))
+}
+
+train_data <- preprocess(train_df)
+test_data <- preprocess(test_df)
+
+```
+
+```{r}
+target_labels <- unique(train_data$y)
+
+# One-hot encode the target labels
+train_labels <- to_categorical(as.integer(factor(train_data$y, levels = target_labels)) - 1)
+
+```
+
+```{r}
+model <- keras_model_sequential() %>%
+  layer_dense(units = 128, activation = "relu", input_shape = c(input_dim)) %>%
+  layer_dense(units = 64, activation = "relu") %>%
+  layer_dense(units = num_classes, activation = "softmax")
+
+model %>% compile(
+  loss = "categorical_crossentropy",
+  optimizer = optimizer_adam(learning_rate = 0.001),
+  metrics = c("accuracy")
+)
+
+
+```
+
+```{r}
+# Preprocess the datasets
+preprocess <- function(df) {
+  x <- df[, !(names(df) %in% c("id", "prognosis"))]  # Remove the id and prognosis columns
+  y <- df$prognosis  # Extract the prognosis column
+  
+  return(list(x = x, y = y))
+}
+
+train_data <- preprocess(train_df)
+test_data <- preprocess(test_df)
+
+# Encode the target labels
+target_labels <- unique(train_data$y)
+
+# One-hot encode the target labels
+train_labels <- to_categorical(as.integer(factor(train_data$y, levels = target_labels)) - 1)
+
+input_dim <- ncol(train_data$x)
+num_classes <- length(target_labels)
+
+model <- keras_model_sequential() %>%
+  layer_dense(units = 128, activation = "relu", input_shape = c(input_dim)) %>%
+  layer_dense(units = 64, activation = "relu") %>%
+  layer_dense(units = num_classes, activation = "softmax")
+
+model %>% compile(
+  loss = "categorical_crossentropy",
+  optimizer = optimizer_adam(learning_rate = 0.001),
+  metrics = c("accuracy")
+)
+
+
+
+```
+
+```{r}
+predicted_probabilities <- model %>% predict_proba(as.matrix(test_data$x))
+
+```
+
+```{r}
+source_python("helper_functions.py")
+
+```
+
+```{r}
+top_3_predictions <- top3(predicted_probabilities)
+
+```
+
+```{r}
+# Assuming you have a function named 'get_actual_labels' that takes a data frame as input and returns a list of the actual labels for each data point
+get_actual_labels <- function(df) {
+  return(lapply(df$target_column, function(label) c(label))) # Replace 'target_column' with the actual target column name in your dataset
+}
+
+actual_labels <- get_actual_labels(train_df)
+mapk_score <- mapk(actual_labels, predicted_probabilities, k = 3)
+
+```
+
+```{r}
+# Convert the top 3 predictions to the required submission format
+submission_prognosis <- apply(top_3_predictions, 1, paste, collapse = " ")
+
+# Create a submission data frame
+submission_df <- data.frame(id = test_df$id, prognosis = submission_prognosis)
+
+# Save the submission data frame to a CSV file
+write_csv(submission_df, "submission.csv", col_names = TRUE)
+
+```
+
 

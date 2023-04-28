@@ -1,0 +1,93 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(caret)
+library(mlr3)
+library(mlr3learners)
+library(mlr3tuning)
+library(mlr3verse)
+
+train <- read.csv("train.csv")
+test <- read.csv("test.csv")
+
+```
+
+```{r}
+# Prepare the data
+x_train <- model.matrix(prognosis ~ ., data = train)
+y_train <- as.factor(train$prognosis)
+
+# Set up the cross-validation method
+train_control <- trainControl(method = "cv", number = 5, search = "random")
+
+# Set up the tuning grid
+tune_grid <- expand.grid(.mtry = seq(2, ncol(x_train), 2))
+
+# Train the model using random search
+set.seed(123)
+random_search_model <- train(
+  x_train,
+  y_train,
+  method = "rf",
+  trControl = train_control,
+  tuneGrid = tune_grid
+)
+
+print(random_search_model)
+
+```
+
+```{r}
+# Load required packages
+library(ranger)
+library(rBayesianOptimization)
+
+# Convert the target variable to a factor
+train$prognosis <- as.factor(train$prognosis)
+
+# Create a function to optimize
+optimize_ranger <- function(mtry, min.node.size, sample.fraction) {
+  model <- ranger(
+    prognosis ~ .,
+    data = train,
+    mtry = mtry,
+    min.node.size = min.node.size,
+    sample.fraction = sample.fraction,
+    num.trees = 100,
+    importance = "impurity",
+    seed = 123
+  )
+  
+  # Use cross-validated accuracy as the metric to optimize
+  out <- model$prediction.error
+  list(Score = out, Pred = out)
+}
+
+# Set up the search space
+search_space <- list(
+  mtry = c(1, ncol(train) - 1),
+  min.node.size = c(1, 10),
+  sample.fraction = c(0.5, 1)
+)
+
+# Perform the Bayesian optimization
+result <- BayesianOptimization(
+  FUN = optimize_ranger,
+  bounds = search_space,
+  init_points = 10,
+  n_iter = 50,
+  acq = "ucb",
+  kappa = 2.576,
+  eps = 0.0,
+  verbose = TRUE
+)
+
+# Get the best hyperparameter
+best_hp <- result$Best_Par
+print(best_hp)
+
+```
+

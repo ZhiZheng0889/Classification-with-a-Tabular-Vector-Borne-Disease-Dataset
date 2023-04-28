@@ -1,304 +1,304 @@
 id,prognosis
-707,Malaria
-708,Chikungunya
-709,Japanese Encephalitis
-710,Zika
-711,Raft Valley Fever
-712,Plague
-713,Raft Valley Fever
-714,Chikungunya
-715,Plague
-716,Plague
+707,Tungiasis
+708,Yellow Fever
+709,Yellow Fever
+710,Tungiasis
+711,Dengue
+712,Tungiasis
+713,Malaria
+714,Tungiasis
+715,Zika
+716,Tungiasis
 717,Japanese Encephalitis
-718,Malaria
-719,Malaria
-720,Chikungunya
-721,Lyme Disease
+718,Zika
+719,Japanese Encephalitis
+720,Japanese Encephalitis
+721,Japanese Encephalitis
 722,Zika
 723,Japanese Encephalitis
 724,Tungiasis
-725,Chikungunya
-726,Plague
-727,Japanese Encephalitis
-728,Plague
-729,Zika
-730,Raft Valley Fever
-731,Chikungunya
-732,Chikungunya
-733,Japanese Encephalitis
-734,Plague
-735,Lyme Disease
+725,Zika
+726,Malaria
+727,Tungiasis
+728,Yellow Fever
+729,Tungiasis
+730,Yellow Fever
+731,Zika
+732,Tungiasis
+733,Yellow Fever
+734,Chikungunya
+735,Yellow Fever
 736,Yellow Fever
-737,Plague
+737,Zika
 738,Tungiasis
-739,Yellow Fever
-740,Yellow Fever
-741,Yellow Fever
-742,Japanese Encephalitis
+739,Zika
+740,Japanese Encephalitis
+741,Japanese Encephalitis
+742,Yellow Fever
 743,Zika
 744,Japanese Encephalitis
 745,Yellow Fever
-746,Japanese Encephalitis
-747,Yellow Fever
-748,Chikungunya
-749,Plague
-750,Plague
-751,Chikungunya
-752,Malaria
-753,Chikungunya
-754,Yellow Fever
-755,Plague
-756,Tungiasis
-757,Malaria
-758,Chikungunya
+746,Tungiasis
+747,Chikungunya
+748,Tungiasis
+749,Chikungunya
+750,Tungiasis
+751,Japanese Encephalitis
+752,Japanese Encephalitis
+753,Japanese Encephalitis
+754,Zika
+755,Tungiasis
+756,Dengue
+757,Yellow Fever
+758,Tungiasis
 759,Yellow Fever
-760,Plague
-761,Malaria
+760,Tungiasis
+761,Japanese Encephalitis
 762,Yellow Fever
-763,Chikungunya
-764,Chikungunya
-765,Dengue
-766,Dengue
-767,Yellow Fever
-768,Japanese Encephalitis
-769,Yellow Fever
-770,Chikungunya
+763,Tungiasis
+764,Yellow Fever
+765,Zika
+766,Tungiasis
+767,Chikungunya
+768,Tungiasis
+769,Japanese Encephalitis
+770,Yellow Fever
 771,Tungiasis
-772,Zika
+772,Japanese Encephalitis
 773,Japanese Encephalitis
-774,Japanese Encephalitis
-775,Malaria
-776,Tungiasis
-777,Tungiasis
-778,Zika
-779,Raft Valley Fever
-780,Malaria
-781,Yellow Fever
-782,Chikungunya
-783,Lyme Disease
+774,Yellow Fever
+775,Tungiasis
+776,Japanese Encephalitis
+777,Yellow Fever
+778,Yellow Fever
+779,Tungiasis
+780,Zika
+781,Tungiasis
+782,Yellow Fever
+783,Malaria
 784,Zika
-785,Plague
-786,Raft Valley Fever
-787,Lyme Disease
+785,Tungiasis
+786,Yellow Fever
+787,Japanese Encephalitis
 788,Zika
-789,Plague
-790,Japanese Encephalitis
-791,Zika
-792,Raft Valley Fever
-793,Yellow Fever
-794,Chikungunya
+789,Dengue
+790,Tungiasis
+791,Malaria
+792,Zika
+793,Tungiasis
+794,Yellow Fever
 795,Tungiasis
-796,Yellow Fever
-797,Malaria
-798,Chikungunya
-799,Lyme Disease
-800,Tungiasis
-801,Malaria
-802,Chikungunya
-803,Yellow Fever
-804,Zika
-805,Plague
-806,Japanese Encephalitis
-807,Yellow Fever
-808,Zika
-809,Raft Valley Fever
-810,Zika
+796,Plague
+797,Yellow Fever
+798,Yellow Fever
+799,Tungiasis
+800,Dengue
+801,Yellow Fever
+802,Yellow Fever
+803,Plague
+804,Japanese Encephalitis
+805,Yellow Fever
+806,Zika
+807,Japanese Encephalitis
+808,Tungiasis
+809,Yellow Fever
+810,Yellow Fever
 811,Tungiasis
 812,Chikungunya
-813,Zika
+813,Tungiasis
 814,Japanese Encephalitis
-815,Lyme Disease
-816,Raft Valley Fever
-817,Lyme Disease
-818,Tungiasis
-819,Plague
+815,Tungiasis
+816,Malaria
+817,Tungiasis
+818,Japanese Encephalitis
+819,Japanese Encephalitis
 820,Tungiasis
-821,Plague
+821,Tungiasis
 822,Japanese Encephalitis
-823,Plague
-824,Chikungunya
+823,Chikungunya
+824,Zika
 825,Tungiasis
-826,Japanese Encephalitis
-827,Japanese Encephalitis
+826,Yellow Fever
+827,Yellow Fever
 828,Chikungunya
-829,Zika
-830,Malaria
-831,Dengue
-832,Zika
-833,Tungiasis
+829,Tungiasis
+830,Yellow Fever
+831,Yellow Fever
+832,Japanese Encephalitis
+833,Dengue
 834,Zika
-835,Chikungunya
-836,Tungiasis
-837,Yellow Fever
-838,Chikungunya
+835,Japanese Encephalitis
+836,Japanese Encephalitis
+837,Dengue
+838,Yellow Fever
 839,Japanese Encephalitis
-840,Yellow Fever
-841,Plague
-842,Yellow Fever
-843,Japanese Encephalitis
-844,Tungiasis
-845,Tungiasis
-846,Chikungunya
-847,Raft Valley Fever
+840,Zika
+841,Dengue
+842,Zika
+843,Yellow Fever
+844,Plague
+845,Yellow Fever
+846,Zika
+847,Tungiasis
 848,Zika
-849,Zika
-850,Malaria
-851,Plague
-852,Chikungunya
-853,Dengue
-854,Yellow Fever
+849,Tungiasis
+850,Japanese Encephalitis
+851,Chikungunya
+852,Yellow Fever
+853,Zika
+854,Zika
 855,Zika
-856,Plague
-857,Chikungunya
+856,Japanese Encephalitis
+857,Yellow Fever
 858,Tungiasis
-859,Raft Valley Fever
-860,Lyme Disease
-861,Chikungunya
+859,Plague
+860,Tungiasis
+861,Zika
 862,Yellow Fever
-863,Malaria
-864,Chikungunya
-865,Japanese Encephalitis
-866,Chikungunya
+863,Tungiasis
+864,Yellow Fever
+865,Dengue
+866,Japanese Encephalitis
 867,Japanese Encephalitis
-868,Chikungunya
-869,Lyme Disease
-870,Chikungunya
-871,Chikungunya
-872,Zika
-873,Raft Valley Fever
-874,Chikungunya
-875,Malaria
-876,Plague
-877,Zika
-878,Lyme Disease
-879,Zika
-880,Japanese Encephalitis
+868,Zika
+869,Yellow Fever
+870,Tungiasis
+871,Yellow Fever
+872,Yellow Fever
+873,Chikungunya
+874,Yellow Fever
+875,Tungiasis
+876,Yellow Fever
+877,Tungiasis
+878,Japanese Encephalitis
+879,Yellow Fever
+880,Zika
 881,Tungiasis
 882,Yellow Fever
-883,Chikungunya
-884,Yellow Fever
-885,Malaria
-886,Tungiasis
-887,Chikungunya
+883,Yellow Fever
+884,Tungiasis
+885,Zika
+886,Zika
+887,Yellow Fever
 888,Japanese Encephalitis
-889,Chikungunya
-890,Raft Valley Fever
+889,Japanese Encephalitis
+890,Yellow Fever
 891,Malaria
 892,Japanese Encephalitis
-893,Plague
-894,Chikungunya
-895,Chikungunya
-896,Japanese Encephalitis
-897,Yellow Fever
+893,Tungiasis
+894,Tungiasis
+895,Japanese Encephalitis
+896,Zika
+897,Tungiasis
 898,Tungiasis
-899,Zika
-900,Plague
-901,Plague
-902,Plague
-903,Plague
+899,Yellow Fever
+900,Tungiasis
+901,Yellow Fever
+902,Tungiasis
+903,Tungiasis
 904,Yellow Fever
-905,Plague
+905,Chikungunya
 906,Yellow Fever
 907,Malaria
-908,Chikungunya
-909,Chikungunya
-910,Plague
+908,Yellow Fever
+909,Yellow Fever
+910,Tungiasis
 911,Japanese Encephalitis
-912,Malaria
-913,Zika
-914,Plague
+912,Yellow Fever
+913,Tungiasis
+914,Chikungunya
 915,Yellow Fever
 916,Tungiasis
-917,Zika
-918,Dengue
-919,Dengue
-920,Yellow Fever
-921,Chikungunya
-922,Chikungunya
-923,Chikungunya
+917,Tungiasis
+918,Japanese Encephalitis
+919,Yellow Fever
+920,Japanese Encephalitis
+921,Japanese Encephalitis
+922,Japanese Encephalitis
+923,Zika
 924,Zika
-925,Malaria
-926,Chikungunya
-927,Plague
-928,Zika
-929,Chikungunya
+925,Dengue
+926,Zika
+927,Dengue
+928,Tungiasis
+929,Zika
 930,Zika
-931,Chikungunya
-932,Japanese Encephalitis
+931,Malaria
+932,Zika
 933,Japanese Encephalitis
-934,Yellow Fever
-935,Chikungunya
-936,Yellow Fever
-937,Raft Valley Fever
-938,Tungiasis
-939,West Nile Fever
-940,Tungiasis
-941,Yellow Fever
-942,Chikungunya
-943,Plague
-944,Zika
-945,Dengue
-946,Dengue
-947,Japanese Encephalitis
-948,Chikungunya
+934,Malaria
+935,Zika
+936,Malaria
+937,Zika
+938,Japanese Encephalitis
+939,Tungiasis
+940,Japanese Encephalitis
+941,Japanese Encephalitis
+942,Yellow Fever
+943,Chikungunya
+944,Japanese Encephalitis
+945,Yellow Fever
+946,Yellow Fever
+947,Tungiasis
+948,Yellow Fever
 949,Tungiasis
-950,Plague
-951,Yellow Fever
-952,Dengue
-953,Yellow Fever
-954,Dengue
-955,Tungiasis
-956,Zika
-957,Raft Valley Fever
-958,Chikungunya
-959,Tungiasis
-960,Japanese Encephalitis
-961,Chikungunya
-962,Plague
-963,Japanese Encephalitis
-964,Plague
-965,Raft Valley Fever
-966,Yellow Fever
+950,Dengue
+951,Malaria
+952,Japanese Encephalitis
+953,Plague
+954,Japanese Encephalitis
+955,Japanese Encephalitis
+956,Tungiasis
+957,Japanese Encephalitis
+958,Japanese Encephalitis
+959,Zika
+960,Dengue
+961,Tungiasis
+962,Zika
+963,Zika
+964,Yellow Fever
+965,Japanese Encephalitis
+966,Tungiasis
 967,Yellow Fever
 968,Yellow Fever
-969,Zika
-970,Tungiasis
+969,Tungiasis
+970,Japanese Encephalitis
 971,Tungiasis
-972,Plague
-973,Dengue
+972,Japanese Encephalitis
+973,Japanese Encephalitis
 974,Yellow Fever
-975,Japanese Encephalitis
-976,Japanese Encephalitis
-977,Plague
-978,Japanese Encephalitis
-979,Raft Valley Fever
-980,Plague
-981,Plague
-982,Plague
+975,Zika
+976,Tungiasis
+977,Yellow Fever
+978,Yellow Fever
+979,Tungiasis
+980,Yellow Fever
+981,Yellow Fever
+982,Zika
 983,Tungiasis
-984,Yellow Fever
-985,Raft Valley Fever
-986,Chikungunya
-987,Malaria
-988,Chikungunya
+984,Zika
+985,Japanese Encephalitis
+986,Malaria
+987,Yellow Fever
+988,Tungiasis
 989,Malaria
-990,Japanese Encephalitis
-991,Zika
-992,Lyme Disease
-993,Plague
-994,Raft Valley Fever
-995,Malaria
-996,Chikungunya
-997,Tungiasis
+990,Zika
+991,Yellow Fever
+992,Japanese Encephalitis
+993,Zika
+994,Yellow Fever
+995,Yellow Fever
+996,Japanese Encephalitis
+997,Japanese Encephalitis
 998,Japanese Encephalitis
-999,Japanese Encephalitis
-1000,Chikungunya
-1001,West Nile Fever
-1002,Lyme Disease
-1003,Plague
-1004,Japanese Encephalitis
-1005,Plague
-1006,Raft Valley Fever
+999,Plague
+1000,Dengue
+1001,Tungiasis
+1002,Tungiasis
+1003,Japanese Encephalitis
+1004,Tungiasis
+1005,Tungiasis
+1006,Malaria
 1007,Japanese Encephalitis
-1008,Malaria
-1009,Lyme Disease
+1008,Zika
+1009,Zika

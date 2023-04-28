@@ -10,42 +10,31 @@ library(tidyverse)
 library(caret)
 
 # Read the data
-train_data <- read_csv("train.csv")
-test_data <- read_csv("test.csv")
+train_data <- read_csv("https://www.dropbox.com/s/z1jjzqwnmx6opxi/train.csv?dl=1")
+test_data <- read_csv("https://www.dropbox.com/s/0a2tse6lyxpg1h5/test.csv?dl=1")
+
+# Select the 4 specified variables and target variable
+train_data <- train_data %>% dplyr::select(id, sudden_fever, headache, mouth_bleed, nose_bleed, prognosis)
+test_data <- test_data %>% dplyr::select(id, sudden_fever, headache, mouth_bleed, nose_bleed)
 
 # Save the 'id' column before scaling
 test_ids <- test_data$id
 
 # Split features and target variable
-train_x <- train_data %>% select(-prognosis, -id)
+train_x <- train_data %>% dplyr::select(-prognosis, -id)
 train_y <- train_data$prognosis
 
 # Scale the input features and preserve column names
 train_x <- as.data.frame(scale(train_x))
-test_data <- test_data %>% select(-id)
-test_data_scaled <- as.data.frame(scale(test_data))
-colnames(test_data_scaled) <- colnames(test_data)
+test_data_scaled <- as.data.frame(scale(test_data %>% dplyr::select(-id)))
+colnames(test_data_scaled) <- colnames(test_data %>% dplyr::select(-id))
 
 # Convert train_y to a factor
 train_y <- as.factor(train_y)
 
-# Set up the parameter grid for hyperparameter tuning
-tune_grid <- expand.grid(mtry = seq(1, ncol(train_x), by = 1))
-
-# Define the control parameters for the tuning process
-fit_control <- trainControl(method = "cv", number = 5, verboseIter = TRUE)
-
-# Perform hyperparameter tuning using caret
+# Train the random forest model using the best parameters
 set.seed(123)
-rf_tuned <- train(x = train_x, y = train_y,
-                  method = "rf",
-                  trControl = fit_control,
-                  tuneGrid = tune_grid,
-                  ntree = 500,
-                  importance = TRUE)
-
-# Select the best model
-best_rf_model <- rf_tuned$finalModel
+best_rf_model <- randomForest(x = train_x, y = train_y, mtry = 45.9292, nodesize = 4.5018, sampsize = floor(0.8581 * nrow(train_x)), ntree = 500, importance = TRUE)
 
 # Create a named vector that maps the factor levels to the disease names
 disease_mapping <- setNames(c("Chikungunya", "Dengue", "Zika", "Yellow Fever", "Raft Valley Fever", "West Nile Fever", "Malaria", "Tungiasis", "Japanese Encephalitis", "Plague", "Lyme Disease"), levels(train_y))
@@ -65,6 +54,7 @@ predictions_rf <- data.frame(
 # Save the predictions to a CSV file, using 'write.table' to correctly format the output
 write.table(predictions_rf, "submission_rf_tuned.csv", sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
 
-
 ```
+
+
 

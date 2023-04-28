@@ -11,7 +11,7 @@
 
 
 
-<title>Random Forest Model</title>
+<title>R Notebook</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1746,93 +1746,37 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Random Forest Model</h1>
+<h1 class="title toc-ignore">R Notebook</h1>
 
 </div>
 
 
 <!-- rnb-text-begin -->
+<p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+Notebook. When you execute code within the notebook, the results appear
+beneath the code.</p>
+<p>Try executing this chunk by clicking the <em>Run</em> button within
+the chunk or by placing your cursor inside it and pressing
+<em>Ctrl+Shift+Enter</em>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBMb2FkIGxpYnJhcmllc1xubGlicmFyeShyYW5kb21Gb3Jlc3QpXG5saWJyYXJ5KHRpZHl2ZXJzZSlcbmxpYnJhcnkoY2FyZXQpXG5cbiMgUmVhZCB0aGUgZGF0YVxudHJhaW5fZGF0YSA8LSByZWFkX2NzdihcImh0dHBzOi8vd3d3LmRyb3Bib3guY29tL3MvejFqanpxd25teDZvcHhpL3RyYWluLmNzdj9kbD0xXCIpXG5gYGAifQ== -->
-<pre class="r"><code># Load libraries
-library(randomForest)
-library(tidyverse)
-library(caret)
-
-# Read the data
-train_data &lt;- read_csv(&quot;https://www.dropbox.com/s/z1jjzqwnmx6opxi/train.csv?dl=1&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUm93czogNzA3IENvbHVtbnM6IDY24pSA4pSAIENvbHVtbiBzcGVjaWZpY2F0aW9uIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgFxuRGVsaW1pdGVyOiBcIixcIlxuY2hyICAoMSk6IHByb2dub3Npc1xuZGJsICg2NSk6IGlkLCBzdWRkZW5fZmV2ZXIsIGhlYWRhY2hlLCBtb3V0aF9ibGVlZCwgbm9zZV9ibGVlZCwgbXVzY2xlX3BhaW4sIGpvaW50X3BhaW4sIHZvbWl0aW5nLCByYXNoLCBkaWFycmhlYS4uLlxu4oS5IFVzZSBgc3BlYygpYCB0byByZXRyaWV2ZSB0aGUgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbiBmb3IgdGhpcyBkYXRhLlxu4oS5IFNwZWNpZnkgdGhlIGNvbHVtbiB0eXBlcyBvciBzZXQgYHNob3dfY29sX3R5cGVzID0gRkFMU0VgIHRvIHF1aWV0IHRoaXMgbWVzc2FnZS5cbiJ9 -->
-<pre><code>Rows: 707 Columns: 66── Column specification ────────────────────────────────────────────────────────────────────────────────────────────
-Delimiter: &quot;,&quot;
-chr  (1): prognosis
-dbl (65): id, sudden_fever, headache, mouth_bleed, nose_bleed, muscle_pain, joint_pain, vomiting, rash, diarrhea...
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudGVzdF9kYXRhIDwtIHJlYWRfY3N2KFwiaHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy8wYTJ0c2U2bHl4cGcxaDUvdGVzdC5jc3Y/ZGw9MVwiKVxuYGBgIn0= -->
-<pre class="r"><code>test_data &lt;- read_csv(&quot;https://www.dropbox.com/s/0a2tse6lyxpg1h5/test.csv?dl=1&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUm93czogMzAzIENvbHVtbnM6IDY14pSA4pSAIENvbHVtbiBzcGVjaWZpY2F0aW9uIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgFxuRGVsaW1pdGVyOiBcIixcIlxuZGJsICg2NSk6IGlkLCBzdWRkZW5fZmV2ZXIsIGhlYWRhY2hlLCBtb3V0aF9ibGVlZCwgbm9zZV9ibGVlZCwgbXVzY2xlX3BhaW4sIGpvaW50X3BhaW4sIHZvbWl0aW5nLCByYXNoLCBkaWFycmhlYS4uLlxu4oS5IFVzZSBgc3BlYygpYCB0byByZXRyaWV2ZSB0aGUgZnVsbCBjb2x1bW4gc3BlY2lmaWNhdGlvbiBmb3IgdGhpcyBkYXRhLlxu4oS5IFNwZWNpZnkgdGhlIGNvbHVtbiB0eXBlcyBvciBzZXQgYHNob3dfY29sX3R5cGVzID0gRkFMU0VgIHRvIHF1aWV0IHRoaXMgbWVzc2FnZS5cbiJ9 -->
-<pre><code>Rows: 303 Columns: 65── Column specification ────────────────────────────────────────────────────────────────────────────────────────────
-Delimiter: &quot;,&quot;
-dbl (65): id, sudden_fever, headache, mouth_bleed, nose_bleed, muscle_pain, joint_pain, vomiting, rash, diarrhea...
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTZWxlY3QgdGhlIDQgc3BlY2lmaWVkIHZhcmlhYmxlcyBhbmQgdGFyZ2V0IHZhcmlhYmxlXG50cmFpbl9kYXRhIDwtIHRyYWluX2RhdGEgJT4lIGRwbHlyOjpzZWxlY3QoaWQsIHN1ZGRlbl9mZXZlciwgaGVhZGFjaGUsIG1vdXRoX2JsZWVkLCBub3NlX2JsZWVkLCBwcm9nbm9zaXMpXG50ZXN0X2RhdGEgPC0gdGVzdF9kYXRhICU+JSBkcGx5cjo6c2VsZWN0KGlkLCBzdWRkZW5fZmV2ZXIsIGhlYWRhY2hlLCBtb3V0aF9ibGVlZCwgbm9zZV9ibGVlZClcblxuIyBTYXZlIHRoZSAnaWQnIGNvbHVtbiBiZWZvcmUgc2NhbGluZ1xudGVzdF9pZHMgPC0gdGVzdF9kYXRhJGlkXG5cbiMgU3BsaXQgZmVhdHVyZXMgYW5kIHRhcmdldCB2YXJpYWJsZVxudHJhaW5feCA8LSB0cmFpbl9kYXRhICU+JSBkcGx5cjo6c2VsZWN0KC1wcm9nbm9zaXMsIC1pZClcbnRyYWluX3kgPC0gdHJhaW5fZGF0YSRwcm9nbm9zaXNcblxuIyBTY2FsZSB0aGUgaW5wdXQgZmVhdHVyZXMgYW5kIHByZXNlcnZlIGNvbHVtbiBuYW1lc1xudHJhaW5feCA8LSBhcy5kYXRhLmZyYW1lKHNjYWxlKHRyYWluX3gpKVxudGVzdF9kYXRhX3NjYWxlZCA8LSBhcy5kYXRhLmZyYW1lKHNjYWxlKHRlc3RfZGF0YSAlPiUgZHBseXI6OnNlbGVjdCgtaWQpKSlcbmNvbG5hbWVzKHRlc3RfZGF0YV9zY2FsZWQpIDwtIGNvbG5hbWVzKHRlc3RfZGF0YSAlPiUgZHBseXI6OnNlbGVjdCgtaWQpKVxuXG4jIENvbnZlcnQgdHJhaW5feSB0byBhIGZhY3RvclxudHJhaW5feSA8LSBhcy5mYWN0b3IodHJhaW5feSlcblxuIyBUcmFpbiB0aGUgcmFuZG9tIGZvcmVzdCBtb2RlbCB1c2luZyB0aGUgYmVzdCBwYXJhbWV0ZXJzXG5zZXQuc2VlZCgxMjMpXG5iZXN0X3JmX21vZGVsIDwtIHJhbmRvbUZvcmVzdCh4ID0gdHJhaW5feCwgeSA9IHRyYWluX3ksIG10cnkgPSA0NS45MjkyLCBub2Rlc2l6ZSA9IDQuNTAxOCwgc2FtcHNpemUgPSBmbG9vcigwLjg1ODEgKiBucm93KHRyYWluX3gpKSwgbnRyZWUgPSA1MDAsIGltcG9ydGFuY2UgPSBUUlVFKVxuYGBgIn0= -->
-<pre class="r"><code># Select the 4 specified variables and target variable
-train_data &lt;- train_data %&gt;% dplyr::select(id, sudden_fever, headache, mouth_bleed, nose_bleed, prognosis)
-test_data &lt;- test_data %&gt;% dplyr::select(id, sudden_fever, headache, mouth_bleed, nose_bleed)
-
-# Save the &#39;id&#39; column before scaling
-test_ids &lt;- test_data$id
-
-# Split features and target variable
-train_x &lt;- train_data %&gt;% dplyr::select(-prognosis, -id)
-train_y &lt;- train_data$prognosis
-
-# Scale the input features and preserve column names
-train_x &lt;- as.data.frame(scale(train_x))
-test_data_scaled &lt;- as.data.frame(scale(test_data %&gt;% dplyr::select(-id)))
-colnames(test_data_scaled) &lt;- colnames(test_data %&gt;% dplyr::select(-id))
-
-# Convert train_y to a factor
-train_y &lt;- as.factor(train_y)
-
-# Train the random forest model using the best parameters
-set.seed(123)
-best_rf_model &lt;- randomForest(x = train_x, y = train_y, mtry = 45.9292, nodesize = 4.5018, sampsize = floor(0.8581 * nrow(train_x)), ntree = 500, importance = TRUE)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogaW52YWxpZCBtdHJ5OiByZXNldCB0byB3aXRoaW4gdmFsaWQgcmFuZ2VcbiJ9 -->
-<pre><code>Warning: invalid mtry: reset to within valid range</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDcmVhdGUgYSBuYW1lZCB2ZWN0b3IgdGhhdCBtYXBzIHRoZSBmYWN0b3IgbGV2ZWxzIHRvIHRoZSBkaXNlYXNlIG5hbWVzXG5kaXNlYXNlX21hcHBpbmcgPC0gc2V0TmFtZXMoYyhcIkNoaWt1bmd1bnlhXCIsIFwiRGVuZ3VlXCIsIFwiWmlrYVwiLCBcIlllbGxvdyBGZXZlclwiLCBcIlJhZnQgVmFsbGV5IEZldmVyXCIsIFwiV2VzdCBOaWxlIEZldmVyXCIsIFwiTWFsYXJpYVwiLCBcIlR1bmdpYXNpc1wiLCBcIkphcGFuZXNlIEVuY2VwaGFsaXRpc1wiLCBcIlBsYWd1ZVwiLCBcIkx5bWUgRGlzZWFzZVwiKSwgbGV2ZWxzKHRyYWluX3kpKVxuXG4jIFJhbmRvbSBGb3Jlc3QgcHJlZGljdGlvbnNcbnRlc3RfcHJlZHNfcmYgPC0gcHJlZGljdChiZXN0X3JmX21vZGVsLCB0ZXN0X2RhdGFfc2NhbGVkKVxuXG4jIFJlcGxhY2UgdGhlIGZhY3RvciBsZXZlbHMgaW4gdGhlIHRlc3RfcHJlZHNfcmYgd2l0aCB0aGUgYWN0dWFsIGRpc2Vhc2UgbmFtZXNcbnRlc3RfcHJlZHNfcmZfZGlzZWFzZXMgPC0gZGlzZWFzZV9tYXBwaW5nW2FzLmNoYXJhY3Rlcih0ZXN0X3ByZWRzX3JmKV1cblxuIyBDcmVhdGUgdGhlIHN1Ym1pc3Npb24gZGF0YS5mcmFtZVxucHJlZGljdGlvbnNfcmYgPC0gZGF0YS5mcmFtZShcbiAgaWQgPSB0ZXN0X2lkcyxcbiAgcHJvZ25vc2lzID0gdGVzdF9wcmVkc19yZl9kaXNlYXNlc1xuKVxuXG4jIFNhdmUgdGhlIHByZWRpY3Rpb25zIHRvIGEgQ1NWIGZpbGUsIHVzaW5nICd3cml0ZS50YWJsZScgdG8gY29ycmVjdGx5IGZvcm1hdCB0aGUgb3V0cHV0XG53cml0ZS50YWJsZShwcmVkaWN0aW9uc19yZiwgXCJzdWJtaXNzaW9uX3JmX3R1bmVkLmNzdlwiLCBzZXAgPSBcIixcIiwgY29sLm5hbWVzID0gVFJVRSwgcm93Lm5hbWVzID0gRkFMU0UsIHF1b3RlID0gRkFMU0UpXG5cbmBgYCJ9 -->
-<pre class="r"><code># Create a named vector that maps the factor levels to the disease names
-disease_mapping &lt;- setNames(c(&quot;Chikungunya&quot;, &quot;Dengue&quot;, &quot;Zika&quot;, &quot;Yellow Fever&quot;, &quot;Raft Valley Fever&quot;, &quot;West Nile Fever&quot;, &quot;Malaria&quot;, &quot;Tungiasis&quot;, &quot;Japanese Encephalitis&quot;, &quot;Plague&quot;, &quot;Lyme Disease&quot;), levels(train_y))
-
-# Random Forest predictions
-test_preds_rf &lt;- predict(best_rf_model, test_data_scaled)
-
-# Replace the factor levels in the test_preds_rf with the actual disease names
-test_preds_rf_diseases &lt;- disease_mapping[as.character(test_preds_rf)]
-
-# Create the submission data.frame
-predictions_rf &lt;- data.frame(
-  id = test_ids,
-  prognosis = test_preds_rf_diseases
-)
-
-# Save the predictions to a CSV file, using &#39;write.table&#39; to correctly format the output
-write.table(predictions_rf, &quot;submission_rf_tuned.csv&quot;, sep = &quot;,&quot;, col.names = TRUE, row.names = FALSE, quote = FALSE)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
+<pre class="r"><code>plot(cars)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the
+toolbar or by pressing <em>Ctrl+Alt+I</em>.</p>
+<p>When you save the notebook, an HTML file containing the code and
+output will be saved alongside it (click the <em>Preview</em> button or
+press <em>Ctrl+Shift+K</em> to preview the HTML file).</p>
+<p>The preview shows you a rendered HTML copy of the contents of the
+editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not
+run any R code chunks. Instead, the output of the chunk when it was last
+run in the editor is displayed.</p>
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlJhbmRvbSBGb3Jlc3QgTW9kZWwiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpgYGB7cn0NCiMgTG9hZCBsaWJyYXJpZXMNCmxpYnJhcnkocmFuZG9tRm9yZXN0KQ0KbGlicmFyeSh0aWR5dmVyc2UpDQpsaWJyYXJ5KGNhcmV0KQ0KDQojIFJlYWQgdGhlIGRhdGENCnRyYWluX2RhdGEgPC0gcmVhZF9jc3YoImh0dHBzOi8vd3d3LmRyb3Bib3guY29tL3MvejFqanpxd25teDZvcHhpL3RyYWluLmNzdj9kbD0xIikNCnRlc3RfZGF0YSA8LSByZWFkX2NzdigiaHR0cHM6Ly93d3cuZHJvcGJveC5jb20vcy8wYTJ0c2U2bHl4cGcxaDUvdGVzdC5jc3Y/ZGw9MSIpDQoNCiMgU2VsZWN0IHRoZSA0IHNwZWNpZmllZCB2YXJpYWJsZXMgYW5kIHRhcmdldCB2YXJpYWJsZQ0KdHJhaW5fZGF0YSA8LSB0cmFpbl9kYXRhICU+JSBkcGx5cjo6c2VsZWN0KGlkLCBzdWRkZW5fZmV2ZXIsIGhlYWRhY2hlLCBtb3V0aF9ibGVlZCwgbm9zZV9ibGVlZCwgcHJvZ25vc2lzKQ0KdGVzdF9kYXRhIDwtIHRlc3RfZGF0YSAlPiUgZHBseXI6OnNlbGVjdChpZCwgc3VkZGVuX2ZldmVyLCBoZWFkYWNoZSwgbW91dGhfYmxlZWQsIG5vc2VfYmxlZWQpDQoNCiMgU2F2ZSB0aGUgJ2lkJyBjb2x1bW4gYmVmb3JlIHNjYWxpbmcNCnRlc3RfaWRzIDwtIHRlc3RfZGF0YSRpZA0KDQojIFNwbGl0IGZlYXR1cmVzIGFuZCB0YXJnZXQgdmFyaWFibGUNCnRyYWluX3ggPC0gdHJhaW5fZGF0YSAlPiUgZHBseXI6OnNlbGVjdCgtcHJvZ25vc2lzLCAtaWQpDQp0cmFpbl95IDwtIHRyYWluX2RhdGEkcHJvZ25vc2lzDQoNCiMgU2NhbGUgdGhlIGlucHV0IGZlYXR1cmVzIGFuZCBwcmVzZXJ2ZSBjb2x1bW4gbmFtZXMNCnRyYWluX3ggPC0gYXMuZGF0YS5mcmFtZShzY2FsZSh0cmFpbl94KSkNCnRlc3RfZGF0YV9zY2FsZWQgPC0gYXMuZGF0YS5mcmFtZShzY2FsZSh0ZXN0X2RhdGEgJT4lIGRwbHlyOjpzZWxlY3QoLWlkKSkpDQpjb2xuYW1lcyh0ZXN0X2RhdGFfc2NhbGVkKSA8LSBjb2xuYW1lcyh0ZXN0X2RhdGEgJT4lIGRwbHlyOjpzZWxlY3QoLWlkKSkNCg0KIyBDb252ZXJ0IHRyYWluX3kgdG8gYSBmYWN0b3INCnRyYWluX3kgPC0gYXMuZmFjdG9yKHRyYWluX3kpDQoNCiMgVHJhaW4gdGhlIHJhbmRvbSBmb3Jlc3QgbW9kZWwgdXNpbmcgdGhlIGJlc3QgcGFyYW1ldGVycw0Kc2V0LnNlZWQoMTIzKQ0KYmVzdF9yZl9tb2RlbCA8LSByYW5kb21Gb3Jlc3QoeCA9IHRyYWluX3gsIHkgPSB0cmFpbl95LCBtdHJ5ID0gNDUuOTI5Miwgbm9kZXNpemUgPSA0LjUwMTgsIHNhbXBzaXplID0gZmxvb3IoMC44NTgxICogbnJvdyh0cmFpbl94KSksIG50cmVlID0gNTAwLCBpbXBvcnRhbmNlID0gVFJVRSkNCg0KIyBDcmVhdGUgYSBuYW1lZCB2ZWN0b3IgdGhhdCBtYXBzIHRoZSBmYWN0b3IgbGV2ZWxzIHRvIHRoZSBkaXNlYXNlIG5hbWVzDQpkaXNlYXNlX21hcHBpbmcgPC0gc2V0TmFtZXMoYygiQ2hpa3VuZ3VueWEiLCAiRGVuZ3VlIiwgIlppa2EiLCAiWWVsbG93IEZldmVyIiwgIlJhZnQgVmFsbGV5IEZldmVyIiwgIldlc3QgTmlsZSBGZXZlciIsICJNYWxhcmlhIiwgIlR1bmdpYXNpcyIsICJKYXBhbmVzZSBFbmNlcGhhbGl0aXMiLCAiUGxhZ3VlIiwgIkx5bWUgRGlzZWFzZSIpLCBsZXZlbHModHJhaW5feSkpDQoNCiMgUmFuZG9tIEZvcmVzdCBwcmVkaWN0aW9ucw0KdGVzdF9wcmVkc19yZiA8LSBwcmVkaWN0KGJlc3RfcmZfbW9kZWwsIHRlc3RfZGF0YV9zY2FsZWQpDQoNCiMgUmVwbGFjZSB0aGUgZmFjdG9yIGxldmVscyBpbiB0aGUgdGVzdF9wcmVkc19yZiB3aXRoIHRoZSBhY3R1YWwgZGlzZWFzZSBuYW1lcw0KdGVzdF9wcmVkc19yZl9kaXNlYXNlcyA8LSBkaXNlYXNlX21hcHBpbmdbYXMuY2hhcmFjdGVyKHRlc3RfcHJlZHNfcmYpXQ0KDQojIENyZWF0ZSB0aGUgc3VibWlzc2lvbiBkYXRhLmZyYW1lDQpwcmVkaWN0aW9uc19yZiA8LSBkYXRhLmZyYW1lKA0KICBpZCA9IHRlc3RfaWRzLA0KICBwcm9nbm9zaXMgPSB0ZXN0X3ByZWRzX3JmX2Rpc2Vhc2VzDQopDQoNCiMgU2F2ZSB0aGUgcHJlZGljdGlvbnMgdG8gYSBDU1YgZmlsZSwgdXNpbmcgJ3dyaXRlLnRhYmxlJyB0byBjb3JyZWN0bHkgZm9ybWF0IHRoZSBvdXRwdXQNCndyaXRlLnRhYmxlKHByZWRpY3Rpb25zX3JmLCAic3VibWlzc2lvbl9yZl90dW5lZC5jc3YiLCBzZXAgPSAiLCIsIGNvbC5uYW1lcyA9IFRSVUUsIHJvdy5uYW1lcyA9IEZBTFNFLCBxdW90ZSA9IEZBTFNFKQ0KDQpgYGANCg0KDQoNCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpUaGlzIGlzIGFuIFtSIE1hcmtkb3duXShodHRwOi8vcm1hcmtkb3duLnJzdHVkaW8uY29tKSBOb3RlYm9vay4gV2hlbiB5b3UgZXhlY3V0ZSBjb2RlIHdpdGhpbiB0aGUgbm90ZWJvb2ssIHRoZSByZXN1bHRzIGFwcGVhciBiZW5lYXRoIHRoZSBjb2RlLiANCg0KVHJ5IGV4ZWN1dGluZyB0aGlzIGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqUnVuKiBidXR0b24gd2l0aGluIHRoZSBjaHVuayBvciBieSBwbGFjaW5nIHlvdXIgY3Vyc29yIGluc2lkZSBpdCBhbmQgcHJlc3NpbmcgKkN0cmwrU2hpZnQrRW50ZXIqLiANCg0KYGBge3J9DQpwbG90KGNhcnMpDQpgYGANCg0KQWRkIGEgbmV3IGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqSW5zZXJ0IENodW5rKiBidXR0b24gb24gdGhlIHRvb2xiYXIgb3IgYnkgcHJlc3NpbmcgKkN0cmwrQWx0K0kqLg0KDQpXaGVuIHlvdSBzYXZlIHRoZSBub3RlYm9vaywgYW4gSFRNTCBmaWxlIGNvbnRhaW5pbmcgdGhlIGNvZGUgYW5kIG91dHB1dCB3aWxsIGJlIHNhdmVkIGFsb25nc2lkZSBpdCAoY2xpY2sgdGhlICpQcmV2aWV3KiBidXR0b24gb3IgcHJlc3MgKkN0cmwrU2hpZnQrSyogdG8gcHJldmlldyB0aGUgSFRNTCBmaWxlKS4NCg0KVGhlIHByZXZpZXcgc2hvd3MgeW91IGEgcmVuZGVyZWQgSFRNTCBjb3B5IG9mIHRoZSBjb250ZW50cyBvZiB0aGUgZWRpdG9yLiBDb25zZXF1ZW50bHksIHVubGlrZSAqS25pdCosICpQcmV2aWV3KiBkb2VzIG5vdCBydW4gYW55IFIgY29kZSBjaHVua3MuIEluc3RlYWQsIHRoZSBvdXRwdXQgb2YgdGhlIGNodW5rIHdoZW4gaXQgd2FzIGxhc3QgcnVuIGluIHRoZSBlZGl0b3IgaXMgZGlzcGxheWVkLg0K</div>
 
 
 
@@ -1879,7 +1823,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("randomForest.rmd");
+  window.initializeSourceEmbed("randomandgrid.rms.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>
